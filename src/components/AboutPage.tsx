@@ -1,4 +1,3 @@
-import React from 'react';
 import { ContactSectionDetailed } from './ContactSectionDetailed';
 
 export function AboutPage() {

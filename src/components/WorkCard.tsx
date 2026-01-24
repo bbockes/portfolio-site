@@ -1,10 +1,8 @@
-import React from 'react';
-
 interface WorkCardProps {
   title: string;
   tags: string[];
   bgColor: string;
-  image?: string;
+  image?: boolean;
   link?: string;
 }
 

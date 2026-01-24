@@ -1,5 +1,3 @@
-import React from 'react';
-
 export function AboutSection() {
   return (
     <section className="py-20 px-6" id="about">

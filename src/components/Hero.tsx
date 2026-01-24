@@ -1,5 +1,3 @@
-import React from 'react';
-
 export function Hero() {
   return (
     <section className="px-8 md:px-16 py-8 md:py-12">
