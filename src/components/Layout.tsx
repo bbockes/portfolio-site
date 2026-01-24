@@ -54,7 +54,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </main>
         
         {/* Footer */}
-        <footer className="bg-gray-100 dark:bg-gray-800 px-8 md:px-16 py-8">
+        <footer className="bg-gray-100 dark:bg-gray-900 px-8 md:px-16 py-8">
           <div className="max-w-[960px] mx-auto flex items-center justify-between">
             <p className="text-gray-900 dark:text-gray-300 text-base">
               Brendan Bockes · {new Date().getFullYear()}

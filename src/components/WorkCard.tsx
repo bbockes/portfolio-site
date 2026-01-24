@@ -3,13 +3,13 @@ interface WorkCardProps {
   tags: string[];
   bgColor: string;
   image?: boolean;
-  link?: string;
+  slug?: string;
 }
 
-export function WorkCard({ title, tags, bgColor, image, link = '#' }: WorkCardProps) {
+export function WorkCard({ title, tags, bgColor, image, slug }: WorkCardProps) {
   return (
     <a 
-      href={link}
+      href={slug ? `/work/${slug}` : '#'}
       className="block group bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all hover:-translate-y-1"
     >
       {/* Image container with colored background */}

@@ -2,7 +2,7 @@ import { Mail, Linkedin } from 'lucide-react';
 
 export function ContactSectionDetailed() {
   return (
-    <section className="py-16 md:py-20 px-8 md:px-16 bg-gray-800 dark:bg-gray-700">
+    <section className="py-16 md:py-20 px-8 md:px-16 bg-gray-800 dark:bg-gray-800">
       <div className="max-w-[960px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
           {/* Left side - Heading */}
