@@ -71,7 +71,7 @@ const placeholderProject: Project = {
       _type: "imageBlock",
       image: {
         asset: {
-          url: "https://placehold.co/1800x1000/d1d5db/9ca3af?text=Project+Screenshot+(900x500)"
+          url: "https://placehold.co/1800x1200/d1d5db/9ca3af?text=Project+Screenshot+(900x600)"
         }
       },
       caption: "Example screenshot showing the main interface"
@@ -87,7 +87,7 @@ const placeholderProject: Project = {
       _type: "imageBlock",
       image: {
         asset: {
-          url: "https://placehold.co/1800x1000/e5e7eb/9ca3af?text=User+Research+(900x500)"
+          url: "https://placehold.co/1800x1200/e5e7eb/9ca3af?text=User+Research+(900x600)"
         }
       },
       caption: "User research findings and personas"
@@ -103,7 +103,7 @@ const placeholderProject: Project = {
       _type: "imageBlock",
       image: {
         asset: {
-          url: "https://placehold.co/1800x1000/d1d5db/9ca3af?text=Final+Design+(900x500)"
+          url: "https://placehold.co/1800x1200/d1d5db/9ca3af?text=Final+Design+(900x600)"
         }
       },
       caption: "Final design implementation"
@@ -253,7 +253,7 @@ export function ProjectDetail() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-16">
             {/* Project Logo */}
             {project.logo && (
-              <div className="lg:col-span-1">
+              <div className="lg:col-span-1 flex justify-center lg:justify-start">
                 <img 
                   src={project.logo.asset.url}
                   alt={`${project.title} logo`}
@@ -318,7 +318,7 @@ export function ProjectDetail() {
           )}
 
           {/* Content Blocks */}
-          <div className="space-y-16">
+          <div className="space-y-8 md:space-y-12 lg:space-y-16">
             {project.contentBlocks?.map((block) => (
               <div key={block._key}>
                 {block._type === 'textBlock' && (
@@ -337,7 +337,7 @@ export function ProjectDetail() {
                 )}
 
                 {block._type === 'imageBlock' && block.image && (
-                  <div className="max-w-full md:max-w-[700px] lg:max-w-[900px] mx-auto">
+                  <div className="w-full md:max-w-[700px] lg:max-w-[900px] mx-auto">
                     <img 
                       src={block.image.asset.url}
                       alt={block.caption || ''}
@@ -393,12 +393,12 @@ export function ProjectDetail() {
               <p className="text-gray-600 dark:text-gray-400">
                 Brendan Bockes · {new Date().getFullYear()}
               </p>
-              <button
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded hover:bg-blue-600 dark:hover:bg-blue-500 transition-all hover:-translate-y-1 text-sm font-medium"
+              <Link
+                to="/"
+                className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded hover:bg-blue-600 dark:hover:bg-blue-500 transition-all hover:-translate-y-1 text-sm font-medium inline-block"
               >
-                Back to Top
-              </button>
+                Back to Home
+              </Link>
             </div>
           </footer>
 
