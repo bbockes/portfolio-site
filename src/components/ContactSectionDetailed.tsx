@@ -10,7 +10,7 @@ export function ContactSectionDetailed() {
             <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white dark:text-white">
               Like to get in touch?
             </h2>
-            <p className="text-base md:text-lg text-gray-300">
+            <p className="text-xl text-gray-300">
               Reach out today and I'll get back to you soon!
             </p>
           </div>

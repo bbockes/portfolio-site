@@ -237,7 +237,7 @@ export function ProjectDetail() {
                 {project.title}
               </h1>
               {project.subtitle && (
-                <p className="text-lg sm:text-xl text-white">
+                <p className="text-xl text-white">
                   {project.subtitle}
                 </p>
               )}
@@ -265,7 +265,7 @@ export function ProjectDetail() {
             {/* Three text columns */}
             <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-8">
               {project.challenge && (
-                <div>
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
                     Challenge
                   </h2>
@@ -275,7 +275,7 @@ export function ProjectDetail() {
                 </div>
               )}
               {project.solution && (
-                <div>
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
                     Solution
                   </h2>
@@ -285,7 +285,7 @@ export function ProjectDetail() {
                 </div>
               )}
               {project.results && (
-                <div>
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
                     Results
                   </h2>
@@ -302,14 +302,14 @@ export function ProjectDetail() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
               {project.description && (
                 <div className="lg:col-span-2">
-                  <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed">
+                  <p className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
                     {project.description}
                   </p>
                 </div>
               )}
               {project.additionalInfo && (
                 <div className="lg:col-span-1">
-                  <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed">
+                  <p className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
                     {project.additionalInfo}
                   </p>
                 </div>
@@ -329,7 +329,7 @@ export function ProjectDetail() {
                       </h2>
                     )}
                     {block.text && (
-                      <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+                      <p className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
                         {block.text}
                       </p>
                     )}
@@ -393,12 +393,12 @@ export function ProjectDetail() {
               <p className="text-gray-600 dark:text-gray-400">
                 Brendan Bockes · {new Date().getFullYear()}
               </p>
-              <Link
-                to="/"
-                className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded hover:bg-blue-600 dark:hover:bg-blue-500 transition-all hover:-translate-y-1 text-sm font-medium inline-block"
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded hover:bg-blue-600 dark:hover:bg-blue-500 transition-all hover:-translate-y-1 text-sm font-medium"
               >
-                Back to Home
-              </Link>
+                Back to Top
+              </button>
             </div>
           </footer>
 

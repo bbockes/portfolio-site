@@ -61,21 +61,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <p className="text-gray-900 dark:text-gray-300 text-base">
                 Brendan Bockes · {new Date().getFullYear()}
               </p>
-              {isAboutPage ? (
-                <Link
-                  to="/"
-                  className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded hover:bg-blue-600 dark:hover:bg-blue-500 transition-all hover:-translate-y-1 text-sm font-medium"
-                >
-                  Back to Home
-                </Link>
-              ) : (
-                <button
-                  onClick={scrollToTop}
-                  className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded hover:bg-blue-600 dark:hover:bg-blue-500 transition-all hover:-translate-y-1 text-sm font-medium"
-                >
-                  Back to Top
-                </button>
-              )}
+              <button
+                onClick={scrollToTop}
+                className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded hover:bg-blue-600 dark:hover:bg-blue-500 transition-all hover:-translate-y-1 text-sm font-medium"
+              >
+                Back to Top
+              </button>
             </div>
           </footer>
         )}

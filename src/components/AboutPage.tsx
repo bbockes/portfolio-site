@@ -25,7 +25,7 @@ export function AboutPage() {
               <h2 className="text-2xl md:text-3xl font-bold text-red-500 mb-6">
                 Work
               </h2>
-              <div className="space-y-4 text-lg md:text-xl text-gray-700 dark:text-gray-300">
+              <div className="space-y-4 text-xl text-gray-700 dark:text-gray-300">
                 <p>
                   I've spent half a decade helping businesses market themselves online, and, before that, assisting customers on retail floors and behind counters.
                 </p>
@@ -48,7 +48,7 @@ export function AboutPage() {
               <h2 className="text-2xl md:text-3xl font-bold text-blue-600 mb-6">
                 Fun
               </h2>
-              <div className="space-y-4 text-lg md:text-xl text-gray-700 dark:text-gray-300">
+              <div className="space-y-4 text-xl text-gray-700 dark:text-gray-300">
                 <p>
                   I'm a Northern Virginia native who likes to read, cook, and make things.
                 </p>

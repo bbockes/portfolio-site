@@ -5,7 +5,7 @@ export function ContactSection() {
         <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
           Like to get in touch?
         </h2>
-        <p className="text-base md:text-lg text-gray-300 dark:text-gray-200">
+        <p className="text-xl text-gray-300 dark:text-gray-200">
           Find me on{' '}
           <a
             href="https://www.linkedin.com/in/brendan-bockes"
