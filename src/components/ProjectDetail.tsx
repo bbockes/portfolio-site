@@ -146,6 +146,9 @@ export function ProjectDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
+    setProject(null);
+    
     const fetchProject = async () => {
       // CHECK FOR PLACEHOLDER - DELETE THIS BLOCK WHEN YOU HAVE REAL SANITY CONTENT
       if (slug === 'placeholder') {
@@ -384,22 +387,22 @@ export function ProjectDetail() {
             </div>
           </div>
 
-        </div>
+          {/* Footer */}
+          <footer className="border-t border-gray-200 dark:border-gray-700 mt-16 pt-8">
+            <div className="flex justify-between items-center">
+              <p className="text-gray-600 dark:text-gray-400">
+                Brendan Bockes · {new Date().getFullYear()}
+              </p>
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded hover:bg-blue-600 dark:hover:bg-blue-500 transition-all hover:-translate-y-1 text-sm font-medium"
+              >
+                Back to Top
+              </button>
+            </div>
+          </footer>
 
-        {/* Footer */}
-        <footer className="border-t border-gray-200 dark:border-gray-700 mt-16">
-          <div className="py-8 flex justify-between items-center">
-            <p className="text-gray-600 dark:text-gray-400">
-              Brendan Bockes · {new Date().getFullYear()}
-            </p>
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="px-6 py-2 bg-gray-900 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors"
-            >
-              Back to Top
-            </button>
-          </div>
-        </footer>
+        </div>
       </div>
     </div>
   );
