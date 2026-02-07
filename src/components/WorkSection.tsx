@@ -21,6 +21,14 @@ export function WorkSection() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
+        const projectId = import.meta.env.VITE_SANITY_PROJECT_ID;
+        
+        if (!projectId || projectId === 'placeholder') {
+          console.error('Sanity project ID not configured. Check environment variables.');
+          setLoading(false);
+          return;
+        }
+        
         const query = `*[_type == "project"] | order(_createdAt desc) {
           title,
           tags,
@@ -34,7 +42,8 @@ export function WorkSection() {
         }`;
         
         const data = await sanityClient.fetch<Project[]>(query);
-        setProjects(data);
+        console.log('Fetched projects:', data);
+        setProjects(data || []);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching projects:', error);

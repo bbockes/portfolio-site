@@ -68,13 +68,6 @@ export const projectType = defineType({
       description: 'e.g. SEO, CRO, UX/UI, Content Strategy',
     }),
     defineField({
-      name: 'description',
-      title: 'Short Description',
-      type: 'text',
-      rows: 3,
-      description: 'Brief description shown at the top of the case study',
-    }),
-    defineField({
       name: 'challenge',
       title: 'Challenge',
       type: 'text',
@@ -96,10 +89,71 @@ export const projectType = defineType({
       description: 'The outcomes or results achieved',
     }),
     defineField({
+      name: 'description',
+      title: 'Short Description',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          styles: [
+            { title: 'Normal', value: 'normal' },
+          ],
+          marks: {
+            decorators: [
+              { title: 'Strong', value: 'strong' },
+              { title: 'Emphasis', value: 'em' },
+            ],
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'URL',
+                fields: [
+                  {
+                    title: 'URL',
+                    name: 'href',
+                    type: 'url',
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+      description: 'Brief description shown at the top of the case study',
+    }),
+    defineField({
       name: 'additionalInfo',
       title: 'Additional Info',
-      type: 'text',
-      rows: 4,
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          styles: [
+            { title: 'Normal', value: 'normal' },
+          ],
+          marks: {
+            decorators: [
+              { title: 'Strong', value: 'strong' },
+              { title: 'Emphasis', value: 'em' },
+            ],
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'URL',
+                fields: [
+                  {
+                    title: 'URL',
+                    name: 'href',
+                    type: 'url',
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
       description: 'Additional context or information displayed alongside the description',
     }),
     defineField({
@@ -120,8 +174,38 @@ export const projectType = defineType({
             defineField({
               name: 'text',
               title: 'Text',
-              type: 'text',
-              rows: 10,
+              type: 'array',
+              of: [
+                {
+                  type: 'block',
+                  styles: [
+                    { title: 'Normal', value: 'normal' },
+                    { title: 'H2', value: 'h2' },
+                    { title: 'H3', value: 'h3' },
+                  ],
+                  lists: [{ title: 'Bullet', value: 'bullet' }, { title: 'Numbered', value: 'number' }],
+                  marks: {
+                    decorators: [
+                      { title: 'Strong', value: 'strong' },
+                      { title: 'Emphasis', value: 'em' },
+                    ],
+                    annotations: [
+                      {
+                        name: 'link',
+                        type: 'object',
+                        title: 'URL',
+                        fields: [
+                          {
+                            title: 'URL',
+                            name: 'href',
+                            type: 'url',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              ],
             }),
           ],
           preview: {
@@ -154,6 +238,133 @@ export const projectType = defineType({
             select: {
               media: 'image',
               title: 'caption',
+            },
+          },
+        },
+        {
+          name: 'videoBlock',
+          title: 'Video Block',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'videoType',
+              title: 'Video Type',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'Upload Video', value: 'upload' },
+                  { title: 'Embed URL', value: 'embed' },
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'embed',
+            }),
+            defineField({
+              name: 'videoFile',
+              title: 'Video File',
+              type: 'file',
+              options: {
+                accept: 'video/*',
+              },
+              hidden: ({ parent }) => parent?.videoType !== 'upload',
+            }),
+            defineField({
+              name: 'embedUrl',
+              title: 'Embed URL',
+              type: 'url',
+              description: 'YouTube, Vimeo, or other embed URL',
+              hidden: ({ parent }) => parent?.videoType !== 'embed',
+            }),
+            defineField({
+              name: 'caption',
+              title: 'Caption (optional)',
+              type: 'string',
+            }),
+          ],
+          preview: {
+            select: {
+              videoType: 'videoType',
+              embedUrl: 'embedUrl',
+            },
+            prepare({ videoType, embedUrl }) {
+              return {
+                title: videoType === 'upload' ? 'Uploaded Video' : 'Embedded Video',
+                subtitle: embedUrl || 'No URL',
+              }
+            },
+          },
+        },
+        {
+          name: 'imageCarouselBlock',
+          title: 'Image Carousel',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'images',
+              title: 'Images',
+              type: 'array',
+              of: [
+                {
+                  type: 'image',
+                  options: {
+                    hotspot: true,
+                  },
+                  fields: [
+                    defineField({
+                      name: 'caption',
+                      title: 'Caption (optional)',
+                      type: 'string',
+                    }),
+                    defineField({
+                      name: 'description',
+                      title: 'Description',
+                      type: 'array',
+                      of: [
+                        {
+                          type: 'block',
+                          styles: [
+                            { title: 'Normal', value: 'normal' },
+                          ],
+                          marks: {
+                            decorators: [
+                              { title: 'Strong', value: 'strong' },
+                              { title: 'Emphasis', value: 'em' },
+                            ],
+                            annotations: [
+                              {
+                                name: 'link',
+                                type: 'object',
+                                title: 'URL',
+                                fields: [
+                                  {
+                                    title: 'URL',
+                                    name: 'href',
+                                    type: 'url',
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                      description: 'Rich text description that appears under the image',
+                    }),
+                  ],
+                },
+              ],
+              validation: (rule) => rule.min(2).error('Carousel needs at least 2 images'),
+            }),
+          ],
+          preview: {
+            select: {
+              images: 'images',
+            },
+            prepare({ images }) {
+              return {
+                title: 'Image Carousel',
+                subtitle: `${images?.length || 0} images`,
+                media: images?.[0],
+              }
             },
           },
         },
