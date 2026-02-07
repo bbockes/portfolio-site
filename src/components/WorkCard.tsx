@@ -1,25 +1,36 @@
+import { Link } from 'react-router-dom';
+
 interface WorkCardProps {
   title: string;
   tags: string[];
   bgColor: string;
-  image?: boolean;
-  slug?: string;
+  slug: string;
+  screenshot?: {
+    asset: {
+      url: string;
+    };
+  };
 }
 
-export function WorkCard({ title, tags, bgColor, image, slug }: WorkCardProps) {
+export function WorkCard({ title, tags, bgColor, slug, screenshot }: WorkCardProps) {
   return (
-    <a 
-      href={slug ? `/work/${slug}` : '#'}
+    <Link 
+      to={`/work/${slug}`}
       className="block group bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all hover:-translate-y-1"
     >
       {/* Image container with colored background */}
       <div 
-        className="w-full aspect-[5/3] flex items-center justify-center p-6 md:p-8"
+        className="w-full aspect-[5/3] flex items-center justify-center p-6 md:p-8 relative overflow-hidden"
         style={{ backgroundColor: bgColor }}
       >
-        {image && (
+        {screenshot?.asset?.url ? (
+          <img 
+            src={screenshot.asset.url}
+            alt={title}
+            className="w-full h-full object-contain rounded shadow-lg"
+          />
+        ) : (
           <div className="w-full h-full bg-white rounded shadow-lg flex items-center justify-center text-gray-400 text-xs">
-            {/* Placeholder for screenshot - you'll add real images later */}
             Screenshot
           </div>
         )}
@@ -31,9 +42,9 @@ export function WorkCard({ title, tags, bgColor, image, slug }: WorkCardProps) {
           {title}
         </h3>
         <p className="text-gray-500 dark:text-gray-400 text-base">
-          {tags.join(' · ')}
+          {tags?.join(' · ') || ''}
         </p>
       </div>
-    </a>
+    </Link>
   );
 }

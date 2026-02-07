@@ -159,6 +159,12 @@ export function ProjectDetail() {
       // END PLACEHOLDER CHECK
 
       try {
+        console.log('Fetching project with slug:', slug);
+        console.log('Sanity client config:', {
+          projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+          dataset: import.meta.env.VITE_SANITY_DATASET,
+        });
+        
         const query = `*[_type == "project" && slug.current == $slug][0] {
           title,
           "slug": slug.current,
@@ -194,6 +200,12 @@ export function ProjectDetail() {
         }`;
         
         const data = await sanityClient.fetch(query, { slug });
+        console.log('Fetched project data:', data);
+        
+        if (!data) {
+          console.warn('No project found with slug:', slug);
+        }
+        
         setProject(data);
         setLoading(false);
       } catch (error) {
