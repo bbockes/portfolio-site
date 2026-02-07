@@ -30,12 +30,28 @@ export default {
       validation: (Rule) => Rule.required(),
     },
     {
+      name: 'subtitle',
+      title: 'Subtitle',
+      type: 'string',
+      description: 'Optional subtitle shown below the title in the hero section',
+    },
+    {
       name: 'heroImage',
       title: 'Hero Image',
       type: 'image',
       options: {
         hotspot: true,
       },
+      description: 'Main hero image displayed at the top of the case study page',
+    },
+    {
+      name: 'logo',
+      title: 'Project Logo',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+      description: 'Optional project logo displayed alongside challenge/solution/results',
     },
     {
       name: 'tags',
@@ -56,6 +72,34 @@ export default {
       type: 'text',
       rows: 3,
       description: 'Brief description shown at the top of the case study',
+    },
+    {
+      name: 'challenge',
+      title: 'Challenge',
+      type: 'text',
+      rows: 3,
+      description: 'The challenge or problem this project addressed',
+    },
+    {
+      name: 'solution',
+      title: 'Solution',
+      type: 'text',
+      rows: 3,
+      description: 'The solution or approach taken',
+    },
+    {
+      name: 'results',
+      title: 'Results',
+      type: 'text',
+      rows: 3,
+      description: 'The outcomes or results achieved',
+    },
+    {
+      name: 'additionalInfo',
+      title: 'Additional Info',
+      type: 'text',
+      rows: 4,
+      description: 'Additional context or information displayed alongside the description',
     },
     {
       name: 'contentBlocks',
@@ -153,10 +197,16 @@ In Sanity Studio, a project case study would have:
 
 - **Title**: "Website updates to an online lighting store"
 - **Slug**: "online-lighting-store" (auto-generated from title)
+- **Subtitle**: "A comprehensive SEO and UX overhaul" (optional)
 - **Hero Image**: Main project screenshot
+- **Logo**: Project/client logo (optional)
 - **Tags**: ["SEO", "CRO", "IA", "Copywriting"]
 - **Background Color**: "#B8DED4"
-- **Description**: "A comprehensive SEO and UX overhaul..."
+- **Description**: "A comprehensive SEO and UX overhaul that improved..."
+- **Challenge**: "The website had poor search visibility and low conversion rates..."
+- **Solution**: "We implemented a new information architecture and optimized key pages..."
+- **Results**: "Organic traffic increased by 45% and conversions improved by 30%..."
+- **Additional Info**: "This project was completed over 6 months with a team of..." (optional)
 - **Content Blocks**: [
   - Text Block: { heading: "About", text: "..." }
   - Image Block: { image: screenshot1, caption: "Homepage redesign" }
@@ -178,3 +228,8 @@ In Sanity Studio, a project case study would have:
 - You can add as many blocks as you want per project
 - Blocks are flexible - skip heading or caption if not needed
 - All projects use the same template but with different content
+- **New fields**: The schema now includes `subtitle`, `logo`, `challenge`, `solution`, `results`, and `additionalInfo` to match the frontend query
+- All new fields are optional - only fill in what's relevant for each project
+- The `logo` field displays alongside the challenge/solution/results section
+- `challenge`, `solution`, and `results` appear in a 3-column grid layout
+- `description` and `additionalInfo` appear in a 2-column grid layout
