@@ -2,11 +2,11 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { PortableText } from '@portabletext/react';
 import { sanityClient } from '../lib/sanityClient';
-import { ChevronLeft, ChevronRight, Maximize2, X } from 'lucide-react';
+import { Maximize2, X } from 'lucide-react';
 
 interface ContentBlock {
   _key: string;
-  _type: 'textBlock' | 'imageBlock' | 'videoBlock' | 'imageCarouselBlock';
+  _type: 'textBlock' | 'imageBlock' | 'videoBlock';
   heading?: string;
   text?: any[]; // Portable text block content
   image?: {
@@ -22,13 +22,6 @@ interface ContentBlock {
     };
   };
   embedUrl?: string;
-  images?: Array<{
-    asset: {
-      url: string;
-    };
-    caption?: string;
-    description?: any[]; // Portable text block content
-  }>;
 }
 
 interface Project {
@@ -218,17 +211,6 @@ const placeholderProject: Project = {
 };
 // END PLACEHOLDER DATA
 
-
-interface ImageCarouselProps {
-  images: Array<{
-    asset: {
-      url: string;
-    };
-    caption?: string;
-    description?: any[];
-  }>;
-}
-
 function getEmbedUrl(url: string): string {
   if (!url) return '';
   
@@ -253,159 +235,7 @@ function getEmbedUrl(url: string): string {
   return url;
 }
 
-function ImageCarousel({ images }: ImageCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [fullscreenContent, setFullscreenContent] = useState<{
-    url: string;
-    caption?: string;
-  } | null>(null);
-  const [scrollPosition, setScrollPosition] = useState(0);
 
-  const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
-
-  const goToNext = () => {
-    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-
-
-  const openFullscreen = (url: string, caption?: string) => {
-    setScrollPosition(window.scrollY);
-    setFullscreenContent({ url, caption });
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeFullscreen = () => {
-    const savedPosition = scrollPosition;
-    setFullscreenContent(null);
-    document.body.style.overflow = '';
-    window.scrollTo(0, savedPosition);
-  };
-
-  useEffect(() => {
-    if (!fullscreenContent) return;
-    
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        closeFullscreen();
-      }
-    };
-    window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fullscreenContent]);
-
-  return (
-    <>
-      {fullscreenContent && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center"
-          onClick={closeFullscreen}
-        >
-          <button
-            onClick={closeFullscreen}
-            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10"
-            aria-label="Close fullscreen"
-          >
-            <X className="w-8 h-8" />
-          </button>
-          <div className="max-w-[95vw] max-h-[95vh] flex items-center justify-center">
-            <img
-              src={fullscreenContent.url}
-              alt={fullscreenContent.caption || 'Fullscreen image'}
-              className="max-w-full max-h-[95vh] object-contain"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
-          {fullscreenContent.caption && (
-            <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/50 px-4 py-2 rounded">
-              {fullscreenContent.caption}
-            </p>
-          )}
-        </div>
-      )}
-      <div className="w-full relative">
-      <div className="max-w-[1200px] mx-auto px-8 md:px-16 relative">
-        <div className="relative flex items-center">
-          {/* Left Arrow - positioned at left padding boundary */}
-          {images.length > 1 && (
-            <button
-              onClick={goToPrevious}
-              className="absolute left-0 top-1/2 -translate-y-1/2 flex-shrink-0 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all z-10"
-              aria-label="Previous image"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-          )}
-
-          {/* Content Container - fills space between arrows */}
-          <div className="flex items-center gap-10 w-full" style={{ paddingLeft: images.length > 1 ? '70px' : '0', paddingRight: images.length > 1 ? '70px' : '0' }}>
-          {/* Image */}
-          <div className="flex-shrink-0 group relative" style={{ width: '74%', maxWidth: '74%' }}>
-            <div 
-              className="cursor-pointer"
-              onClick={() => openFullscreen(images[currentIndex].asset.url, images[currentIndex].caption)}
-            >
-              <img
-                src={images[currentIndex].asset.url}
-                alt={images[currentIndex].caption || `Image ${currentIndex + 1}`}
-                className="w-full h-auto"
-              />
-              <div className="absolute bottom-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded transition-all opacity-0 group-hover:opacity-100">
-                <Maximize2 className="w-5 h-5" />
-              </div>
-            </div>
-            {/* Caption */}
-            {images[currentIndex].caption && (
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
-                {images[currentIndex].caption}
-              </p>
-            )}
-          </div>
-
-          {/* Text Block */}
-          <div className="flex-1 min-w-[50px] overflow-hidden">
-            {images[currentIndex].description && (
-              <div className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
-                <PortableText
-                  value={images[currentIndex].description}
-                  components={{
-                    block: {
-                      normal: ({ children }) => <p className="mb-4 text-left">{children}</p>,
-                    },
-                    marks: {
-                      strong: ({ children }) => <strong className="font-bold">{children}</strong>,
-                      em: ({ children }) => <em className="italic">{children}</em>,
-                      link: ({ value, children }) => (
-                        <a href={value?.href} className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">
-                          {children}
-                        </a>
-                      ),
-                    },
-                  }}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-
-          {/* Right Arrow - positioned at right padding boundary */}
-          {images.length > 1 && (
-            <button
-              onClick={goToNext}
-              className="absolute right-0 top-1/2 -translate-y-1/2 flex-shrink-0 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all z-10"
-              aria-label="Next image"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-    </>
-  );
-}
 
 export function ProjectDetail() {
   const { slug } = useParams();
@@ -494,14 +324,7 @@ export function ProjectDetail() {
                 url
               }
             },
-            embedUrl,
-            images[] {
-              asset-> {
-                url
-              },
-              caption,
-              description[]
-            }
+            embedUrl
           }
         }`;
         
@@ -850,27 +673,23 @@ export function ProjectDetail() {
                 {block._type === 'videoBlock' && (
                   <div className="w-full md:max-w-[700px] lg:max-w-[900px] mx-auto relative group">
                     {block.videoType === 'upload' && block.videoFile?.asset?.url ? (
-                      <div 
-                        className="cursor-pointer relative"
-                        onClick={() => openFullscreen('video', block.videoFile!.asset.url, block.caption)}
-                      >
+                      <div className="relative group" style={{ paddingBottom: '64.22%' }}>
                         <video 
                           src={block.videoFile.asset.url}
                           controls
-                          className="w-full h-auto"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            openFullscreen('video', block.videoFile!.asset.url, block.caption);
-                          }}
+                          className="absolute top-0 left-0 w-full h-full object-contain bg-black"
                         >
                           Your browser does not support the video tag.
                         </video>
-                        <div className="absolute bottom-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded transition-all opacity-0 group-hover:opacity-100 pointer-events-none">
+                        <div 
+                          className="absolute bottom-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded transition-all opacity-0 group-hover:opacity-100 cursor-pointer z-10"
+                          onClick={() => openFullscreen('video', block.videoFile!.asset.url, block.caption)}
+                        >
                           <Maximize2 className="w-5 h-5" />
                         </div>
                       </div>
                     ) : block.videoType === 'embed' && block.embedUrl ? (
-                      <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                      <div className="relative w-full" style={{ paddingBottom: '64.22%' }}>
                         <iframe
                           src={getEmbedUrl(block.embedUrl)}
                           className="absolute top-0 left-0 w-full h-full"
@@ -888,9 +707,6 @@ export function ProjectDetail() {
                   </div>
                 )}
 
-                {block._type === 'imageCarouselBlock' && block.images && block.images.length > 0 && (
-                  <ImageCarousel images={block.images} />
-                )}
               </div>
             ))}
           </div>

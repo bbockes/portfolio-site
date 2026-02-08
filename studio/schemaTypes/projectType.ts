@@ -221,6 +221,12 @@ export const projectType = defineType({
           type: 'object',
           fields: [
             defineField({
+              name: 'name',
+              title: 'Name',
+              type: 'string',
+              description: 'Reference name for this image (not displayed on frontend)',
+            }),
+            defineField({
               name: 'image',
               title: 'Image',
               type: 'image',
@@ -237,7 +243,7 @@ export const projectType = defineType({
           preview: {
             select: {
               media: 'image',
-              title: 'caption',
+              title: 'name',
             },
           },
         },
@@ -246,6 +252,12 @@ export const projectType = defineType({
           title: 'Video Block',
           type: 'object',
           fields: [
+            defineField({
+              name: 'name',
+              title: 'Name',
+              type: 'string',
+              description: 'Reference name for this video (not displayed on frontend)',
+            }),
             defineField({
               name: 'videoType',
               title: 'Video Type',
@@ -283,87 +295,12 @@ export const projectType = defineType({
           ],
           preview: {
             select: {
+              name: 'name',
               videoType: 'videoType',
-              embedUrl: 'embedUrl',
             },
-            prepare({ videoType, embedUrl }) {
+            prepare({ name, videoType }) {
               return {
-                title: videoType === 'upload' ? 'Uploaded Video' : 'Embedded Video',
-                subtitle: embedUrl || 'No URL',
-              }
-            },
-          },
-        },
-        {
-          name: 'imageCarouselBlock',
-          title: 'Image Carousel',
-          type: 'object',
-          fields: [
-            defineField({
-              name: 'images',
-              title: 'Images',
-              type: 'array',
-              of: [
-                {
-                  type: 'image',
-                  options: {
-                    hotspot: true,
-                  },
-                  fields: [
-                    defineField({
-                      name: 'caption',
-                      title: 'Caption (optional)',
-                      type: 'string',
-                    }),
-                    defineField({
-                      name: 'description',
-                      title: 'Description',
-                      type: 'array',
-                      of: [
-                        {
-                          type: 'block',
-                          styles: [
-                            { title: 'Normal', value: 'normal' },
-                          ],
-                          marks: {
-                            decorators: [
-                              { title: 'Strong', value: 'strong' },
-                              { title: 'Emphasis', value: 'em' },
-                            ],
-                            annotations: [
-                              {
-                                name: 'link',
-                                type: 'object',
-                                title: 'URL',
-                                fields: [
-                                  {
-                                    title: 'URL',
-                                    name: 'href',
-                                    type: 'url',
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        },
-                      ],
-                      description: 'Rich text description that appears under the image',
-                    }),
-                  ],
-                },
-              ],
-              validation: (rule) => rule.min(2).error('Carousel needs at least 2 images'),
-            }),
-          ],
-          preview: {
-            select: {
-              images: 'images',
-            },
-            prepare({ images }) {
-              return {
-                title: 'Image Carousel',
-                subtitle: `${images?.length || 0} images`,
-                media: images?.[0],
+                title: name || (videoType === 'upload' ? 'Uploaded Video' : 'Embedded Video'),
               }
             },
           },
