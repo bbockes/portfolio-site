@@ -7,11 +7,11 @@ export function AboutPage() {
       <div className="max-w-[960px] mx-auto">
         
         {/* Work Section */}
-        <section className="mb-20 md:mb-32">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
+        <section className="mb-6 md:mb-32">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-14 items-start">
             {/* Left: Image */}
             <div className="flex items-start justify-center md:justify-start">
-              <div className="transform -rotate-3 w-full max-w-[358px]" style={{ transform: 'rotate(-3deg) translateX(20px)' }}>
+              <div className="w-full max-w-[358px] work-image-wrapper">
                 <img 
                   src="/images/work.png" 
                   alt="Work"
@@ -33,10 +33,10 @@ export function AboutPage() {
                   From talking to people to building digital products, I've learned how empathy and the right questions can change everything.
                 </p>
                 <p>
-                  That's how I build sites and apps that are a joy to use and genuinely add value. It's no secret—great digital experiences start with care.
+                  That's how I build sites and apps that are a joy to use and genuinely add value. Small wonder users stick around.
                 </p>
                 <p>
-                  View resume
+                  → <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">View resume</a>
                 </p>
               </div>
             </div>
@@ -44,10 +44,10 @@ export function AboutPage() {
         </section>
 
         {/* Fun Section */}
-        <section className="relative" style={{ minHeight: '600px' }}>
+        <section className="relative sm:min-h-[600px]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
             {/* Left: Content */}
-            <div className="mb-5">
+            <div className="mb-5 md:max-w-[70%] lg:max-w-[80%] xl:max-w-none">
               <h2 className="text-2xl md:text-3xl font-bold text-blue-600 mb-6">
                 Fun
               </h2>
@@ -72,13 +72,17 @@ export function AboutPage() {
             </div>
 
             {/* Right: Photo Collage */}
-            <div className="flex items-start justify-center md:justify-end md:absolute" style={{ top: '-75px', right: '-100px' }}>
+            <div className="hidden sm:flex items-start justify-center md:justify-end md:absolute" style={{ top: '-75px', right: '-100px' }}>
               <div className="transform rotate-3" style={{ width: '636px', maxWidth: '100%' }}>
-                <img 
-                  src="/images/fun.png" 
-                  alt="Fun"
-                  className="w-full h-auto"
-                />
+                <picture>
+                  <source media="(min-width: 841px)" srcSet="/images/fun.png" />
+                  <source media="(min-width: 760px) and (max-width: 840px)" srcSet="/images/fun-tablet.png" />
+                  <img 
+                    src="/images/fun.png" 
+                    alt="Fun"
+                    className="w-full h-auto"
+                  />
+                </picture>
               </div>
             </div>
           </div>

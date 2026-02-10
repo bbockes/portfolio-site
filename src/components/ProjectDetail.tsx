@@ -540,65 +540,67 @@ export function ProjectDetail() {
 
           {/* Description + Additional Info Grid */}
           {(project.description || project.additionalInfo) && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-              {project.description && (
-                <div className="lg:col-span-2">
-                  <div className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
-                    <PortableText
-                      value={project.description}
-                      components={{
-                        block: {
-                          normal: ({ children }) => <p className="mb-4">{children}</p>,
-                        },
-                        marks: {
-                          strong: ({ children }) => <strong className="font-bold">{children}</strong>,
-                          em: ({ children }) => <em className="italic">{children}</em>,
-                          link: ({ value, children }) => (
-                            <a href={value?.href} className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">
-                              {children}
-                            </a>
-                          ),
-                        },
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-              {project.additionalInfo && (
-                <div className="lg:col-span-1">
-                  <div className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
-                    <PortableText
-                      value={project.additionalInfo}
-                      components={{
-                        block: {
-                          normal: ({ children }) => <p className="mb-4">{children}</p>,
-                        },
-                        marks: {
-                          strong: ({ children }) => <strong className="font-bold">{children}</strong>,
-                          em: ({ children }) => <em className="italic">{children}</em>,
-                          link: ({ value, children }) => (
-                            <a href={value?.href} className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">
-                              {children}
-                            </a>
-                          ),
-                        },
-                      }}
-                    />
-                  </div>
-                  {project.tags && project.tags.length > 0 && (
-                    <div className="mt-6 flex flex-wrap gap-3">
-                      {project.tags.map((tag, index) => (
-                        <span
-                          key={index}
-                          className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+            <div className="flex justify-center mb-16">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full max-w-[1200px]">
+                {project.description && (
+                  <div className="lg:col-span-2">
+                    <div className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
+                      <PortableText
+                        value={project.description}
+                        components={{
+                          block: {
+                            normal: ({ children }) => <p className="mb-4">{children}</p>,
+                          },
+                          marks: {
+                            strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+                            em: ({ children }) => <em className="italic">{children}</em>,
+                            link: ({ value, children }) => (
+                              <a href={value?.href} className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">
+                                {children}
+                              </a>
+                            ),
+                          },
+                        }}
+                      />
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+                {project.additionalInfo && (
+                  <div className="lg:col-span-1">
+                    <div className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
+                      <PortableText
+                        value={project.additionalInfo}
+                        components={{
+                          block: {
+                            normal: ({ children }) => <p className="mb-4">{children}</p>,
+                          },
+                          marks: {
+                            strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+                            em: ({ children }) => <em className="italic">{children}</em>,
+                            link: ({ value, children }) => (
+                              <a href={value?.href} className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">
+                                {children}
+                              </a>
+                            ),
+                          },
+                        }}
+                      />
+                    </div>
+                    {project.tags && project.tags.length > 0 && (
+                      <div className="mt-6 flex flex-wrap gap-3">
+                        {project.tags.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -648,18 +650,20 @@ export function ProjectDetail() {
                 )}
 
                 {block._type === 'imageBlock' && block.image && (
-                  <div className="w-full md:max-w-[700px] lg:max-w-[900px] mx-auto relative group">
-                    <div 
-                      className="cursor-pointer"
-                      onClick={() => openFullscreen('image', block.image!.asset.url, block.caption)}
-                    >
-                      <img 
-                        src={block.image.asset.url}
-                        alt={block.caption || ''}
-                        className="w-full"
-                      />
-                      <div className="absolute bottom-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded transition-all opacity-0 group-hover:opacity-100">
-                        <Maximize2 className="w-5 h-5" />
+                  <div className="w-full">
+                    <div className="flex justify-center">
+                      <div 
+                        className="relative group cursor-pointer"
+                        onClick={() => openFullscreen('image', block.image!.asset.url, block.caption)}
+                      >
+                        <img 
+                          src={block.image.asset.url}
+                          alt={block.caption || ''}
+                          className="w-auto h-auto max-w-full lg:max-h-[704px]"
+                        />
+                        <div className="absolute bottom-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded transition-all opacity-0 group-hover:opacity-100">
+                          <Maximize2 className="w-5 h-5" />
+                        </div>
                       </div>
                     </div>
                     {block.caption && (
@@ -671,32 +675,37 @@ export function ProjectDetail() {
                 )}
 
                 {block._type === 'videoBlock' && (
-                  <div className="w-full md:max-w-[700px] lg:max-w-[900px] mx-auto relative group">
+                  <div className="w-full">
                     {block.videoType === 'upload' && block.videoFile?.asset?.url ? (
-                      <div className="relative group" style={{ paddingBottom: '64.22%' }}>
-                        <video 
-                          src={block.videoFile.asset.url}
-                          controls
-                          className="absolute top-0 left-0 w-full h-full object-contain bg-black"
-                        >
-                          Your browser does not support the video tag.
-                        </video>
-                        <div 
-                          className="absolute bottom-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded transition-all opacity-0 group-hover:opacity-100 cursor-pointer z-10"
-                          onClick={() => openFullscreen('video', block.videoFile!.asset.url, block.caption)}
-                        >
-                          <Maximize2 className="w-5 h-5" />
+                      <div className="flex justify-center">
+                        <div className="relative group cursor-pointer">
+                          <video 
+                            src={block.videoFile.asset.url}
+                            controls
+                            className="w-auto h-auto max-w-full lg:max-h-[704px] bg-black"
+                          >
+                            Your browser does not support the video tag.
+                          </video>
+                          <div 
+                            className="absolute bottom-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded transition-all opacity-0 group-hover:opacity-100 z-10"
+                            onClick={() => openFullscreen('video', block.videoFile!.asset.url, block.caption)}
+                          >
+                            <Maximize2 className="w-5 h-5" />
+                          </div>
                         </div>
                       </div>
                     ) : block.videoType === 'embed' && block.embedUrl ? (
-                      <div className="relative w-full" style={{ paddingBottom: '64.22%' }}>
-                        <iframe
-                          src={getEmbedUrl(block.embedUrl)}
-                          className="absolute top-0 left-0 w-full h-full"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          title="Video player"
-                        />
+                      <div className="flex justify-center">
+                        <div className="relative" style={{ maxHeight: '704px', width: 'auto', maxWidth: '100%' }}>
+                          <iframe
+                            src={getEmbedUrl(block.embedUrl)}
+                            className="w-full h-full"
+                            style={{ maxHeight: '704px', aspectRatio: '16/9' }}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            title="Video player"
+                          />
+                        </div>
                       </div>
                     ) : null}
                     {block.caption && (

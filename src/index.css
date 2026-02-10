@@ -103,3 +103,14 @@
     scrollbar-color: theme('colors.gray.600') theme('colors.gray.800');
   }
 }
+
+/* Work image rotation - only on desktop */
+.work-image-wrapper {
+  transform: none;
+}
+
+@media (min-width: 768px) {
+  .work-image-wrapper {
+    transform: rotate(-3deg) translateX(30px);
+  }
+}
