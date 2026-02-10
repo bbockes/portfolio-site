@@ -11,10 +11,10 @@ export function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
             {/* Left: Image */}
             <div className="flex items-start justify-center md:justify-start">
-              <div className="bg-white p-3 shadow-lg transform -rotate-3 w-full max-w-md">
+              <div className="transform -rotate-3 w-full max-w-[358px]" style={{ transform: 'rotate(-3deg) translateX(20px)' }}>
                 <img 
-                  src="/images/brendan-photo.jpg" 
-                  alt="Brendan Bockes"
+                  src="/images/work.png" 
+                  alt="Work"
                   className="w-full h-auto"
                 />
               </div>
@@ -30,10 +30,13 @@ export function AboutPage() {
                   I've spent half a decade helping businesses market themselves online, and, before that, assisting customers on retail floors and behind counters.
                 </p>
                 <p>
-                  Along the way, I've learned countless lessons about what it means to be a curious and empathetic human and a collaborative team player. And I've seen first-hand how asking the right questions can make a world of difference.
+                  From talking to people to building digital products, I've learned how empathy and the right questions can change everything.
                 </p>
                 <p>
-                  With the right approach, I believe we can create sites and apps that are a joy to use and that genuinely add value to those who use them—and I love getting the chance everyday to make it happen.
+                  That's how I build sites and apps that are a joy to use and genuinely add value. It's no secret—great digital experiences start with care.
+                </p>
+                <p>
+                  View resume
                 </p>
               </div>
             </div>
@@ -41,7 +44,7 @@ export function AboutPage() {
         </section>
 
         {/* Fun Section */}
-        <section>
+        <section className="relative" style={{ minHeight: '600px' }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
             {/* Left: Content */}
             <div className="mb-5">
@@ -69,11 +72,11 @@ export function AboutPage() {
             </div>
 
             {/* Right: Photo Collage */}
-            <div className="flex items-start justify-center md:justify-end">
-              <div className="bg-white p-3 shadow-lg transform rotate-3 w-full max-w-md">
+            <div className="flex items-start justify-center md:justify-end md:absolute" style={{ top: '-75px', right: '-100px' }}>
+              <div className="transform rotate-3" style={{ width: '636px', maxWidth: '100%' }}>
                 <img 
-                  src="/images/collage.jpg" 
-                  alt="Photo collage"
+                  src="/images/fun.png" 
+                  alt="Fun"
                   className="w-full h-auto"
                 />
               </div>
