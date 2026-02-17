@@ -31,7 +31,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     : 'hover:text-blue-600 dark:hover:text-blue-400 hover:underline'
                 }`}
               >
-                Work
+                Home
               </Link>
               <Link 
                 to="/about"
