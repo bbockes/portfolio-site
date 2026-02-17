@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { PortableText } from '@portabletext/react';
 import { sanityClient } from '../lib/sanityClient';
 import { Maximize2, X } from 'lucide-react';
+import { ScrollReveal } from '../shared/ScrollReveal';
 
 interface ContentBlock {
   _key: string;
@@ -474,11 +475,11 @@ export function ProjectDetail() {
           />
           <div className="absolute inset-0 flex flex-col justify-end items-center px-8 md:px-16 pb-12 lg:pb-16 bg-black bg-opacity-50">
             <div className="text-center max-w-[1200px]">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight animate-hero-rise opacity-0">
                 {project.title}
               </h1>
               {project.subtitle && (
-                <p className="text-xl text-white">
+                <p className="text-xl text-white animate-hero-rise opacity-0 [animation-delay:320ms]">
                   {project.subtitle}
                 </p>
               )}
@@ -494,7 +495,7 @@ export function ProjectDetail() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-8">
             {/* Project Logo */}
             {project.logo && (
-              <div className="lg:col-span-1 flex justify-center lg:justify-start">
+              <div className="lg:col-span-1 flex justify-center lg:justify-start animate-slide-in-left opacity-0 [animation-delay:0ms] [animation-duration:0.9s]">
                 <img 
                   src={project.logo.asset.url}
                   alt={`${project.title} logo`}
@@ -506,7 +507,7 @@ export function ProjectDetail() {
             {/* Three text columns */}
             <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-8">
               {project.challenge && (
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-8 animate-slide-in-left opacity-0 [animation-delay:250ms] [animation-duration:0.9s]">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
                     Challenge
                   </h2>
@@ -516,7 +517,7 @@ export function ProjectDetail() {
                 </div>
               )}
               {project.solution && (
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-8 animate-slide-in-left opacity-0 [animation-delay:500ms] [animation-duration:0.9s]">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
                     Solution
                   </h2>
@@ -526,7 +527,7 @@ export function ProjectDetail() {
                 </div>
               )}
               {project.results && (
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-8 animate-slide-in-left opacity-0 [animation-delay:750ms] [animation-duration:0.9s]">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
                     Results
                   </h2>
@@ -540,7 +541,7 @@ export function ProjectDetail() {
 
           {/* Description + Additional Info Grid */}
           {(project.description || project.additionalInfo) && (
-            <div className="flex justify-center mb-16">
+            <ScrollReveal className="flex justify-center mb-16">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full max-w-[1200px]">
                 {project.description && (
                   <div className="lg:col-span-2">
@@ -601,13 +602,14 @@ export function ProjectDetail() {
                   </div>
                 )}
               </div>
-            </div>
+            </ScrollReveal>
           )}
 
           {/* Content Blocks */}
           <div className="space-y-8 md:space-y-12 lg:space-y-16">
             {project.contentBlocks?.map((block) => (
-              <div key={block._key}>
+              <ScrollReveal key={block._key}>
+                <div>
                 {block._type === 'textBlock' && (
                   <div className="max-w-3xl mx-auto">
                     {block.heading && (
@@ -715,12 +717,13 @@ export function ProjectDetail() {
                   </div>
                 )}
 
-              </div>
+                </div>
+              </ScrollReveal>
             ))}
           </div>
 
           {/* More Projects */}
-          <div className="mt-24 mb-16">
+          <ScrollReveal className="mt-24 mb-16">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-8">
               More Projects
             </h2>
@@ -759,7 +762,7 @@ export function ProjectDetail() {
                 <p className="text-gray-600 dark:text-gray-400">No other projects found.</p>
               )}
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Footer */}
           <footer className="border-t border-gray-200 dark:border-gray-700 mt-16 pt-8">

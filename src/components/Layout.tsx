@@ -1,6 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
 import { ThemeProvider } from '../contexts/ThemeContext';
-import { DarkModeToggle } from '../shared/DarkModeToggle';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -44,7 +43,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
               >
                 About
               </Link>
-              <DarkModeToggle />
             </nav>
           </div>
         </header>
