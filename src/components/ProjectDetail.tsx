@@ -659,7 +659,7 @@ export function ProjectDetail() {
                         <img 
                           src={block.image.asset.url}
                           alt={block.caption || ''}
-                          className="w-auto h-auto max-w-full lg:max-h-[704px]"
+                          className="w-auto h-auto max-w-full max-h-[296px] sm:max-w-[469px] sm:max-h-[296px] md:max-w-[563px] md:max-h-[355px] lg:max-w-[750px] lg:max-h-[474px] xl:max-w-[938px] xl:max-h-[593px] proj:max-w-[990px] proj:max-h-[626px]"
                         />
                         <div className="absolute bottom-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded transition-all opacity-0 group-hover:opacity-100">
                           <Maximize2 className="w-5 h-5" />
@@ -682,7 +682,7 @@ export function ProjectDetail() {
                           <video 
                             src={block.videoFile.asset.url}
                             controls
-                            className="w-auto h-auto max-w-full lg:max-h-[704px] bg-black"
+                            className="w-auto h-auto max-w-full max-h-[296px] sm:max-w-[469px] sm:max-h-[296px] md:max-w-[563px] md:max-h-[355px] lg:max-w-[750px] lg:max-h-[474px] xl:max-w-[938px] xl:max-h-[593px] proj:max-w-[990px] proj:max-h-[626px] bg-black"
                           >
                             Your browser does not support the video tag.
                           </video>
@@ -696,11 +696,10 @@ export function ProjectDetail() {
                       </div>
                     ) : block.videoType === 'embed' && block.embedUrl ? (
                       <div className="flex justify-center">
-                        <div className="relative" style={{ maxHeight: '704px', width: 'auto', maxWidth: '100%' }}>
+                        <div className="relative w-full max-w-full aspect-video max-h-[296px] sm:max-w-[469px] sm:max-h-[296px] md:max-w-[563px] md:max-h-[355px] lg:max-w-[750px] lg:max-h-[474px] xl:max-w-[938px] xl:max-h-[593px] proj:max-w-[990px] proj:max-h-[626px]">
                           <iframe
                             src={getEmbedUrl(block.embedUrl)}
-                            className="w-full h-full"
-                            style={{ maxHeight: '704px', aspectRatio: '16/9' }}
+                            className="absolute inset-0 w-full h-full"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
                             title="Video player"
