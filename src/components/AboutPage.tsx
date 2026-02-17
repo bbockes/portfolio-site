@@ -62,6 +62,8 @@ export function AboutPage() {
                   I also{' '}
                   <a 
                     href="https://blog.brendanbockes.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline transition-colors"
                   >
                     blog
