@@ -43,7 +43,10 @@ export function WorkSection() {
         
         const data = await sanityClient.fetch<Project[]>(query);
         console.log('Fetched projects:', data);
-        setProjects(data || []);
+        const sorted = (data || []).slice().sort((a, b) =>
+          a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
+        );
+        setProjects(sorted);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching projects:', error);
