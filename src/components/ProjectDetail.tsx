@@ -2,8 +2,105 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { PortableText } from '@portabletext/react';
 import { sanityClient } from '../lib/sanityClient';
-import { Maximize2, X } from 'lucide-react';
 import { ScrollReveal } from '../shared/ScrollReveal';
+
+interface MetadataItem {
+  label: string;
+  value: string;
+}
+
+function parseMetadataFromPortableText(blocks?: any[]): MetadataItem[] {
+  if (!blocks) return [];
+
+  return blocks.flatMap((block) => {
+    if (block._type !== 'block' || !block.children) return [];
+
+    const items: MetadataItem[] = [];
+    let label = '';
+    let value = '';
+
+    const flush = () => {
+      const cleanLabel = label.replace(/:$/, '').trim();
+      const cleanValue = value.trim();
+      if (cleanLabel && cleanValue) {
+        items.push({ label: cleanLabel, value: cleanValue });
+      }
+      label = '';
+      value = '';
+    };
+
+    for (const child of block.children) {
+      if (child._type !== 'span') continue;
+      const text = child.text || '';
+      const isStrong = child.marks?.includes('strong');
+
+      if (isStrong) {
+        if (value) flush();
+        label += text;
+      } else {
+        value += text;
+      }
+    }
+
+    flush();
+    return items;
+  });
+}
+
+function findMetadataItem(items: MetadataItem[], ...keywords: string[]): MetadataItem | undefined {
+  const normalize = (text: string) => text.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return items.find(({ label }) =>
+    keywords.some((keyword) => normalize(label) === normalize(keyword))
+  );
+}
+
+function getMetadataValue(items: MetadataItem[], ...keywords: string[]): string | undefined {
+  return findMetadataItem(items, ...keywords)?.value;
+}
+
+const caseStudyMediaFrameClass =
+  'relative w-full max-w-[1310px] aspect-[1310/854] overflow-hidden';
+const caseStudyVideoFrameClass =
+  'relative mx-auto flex items-center justify-center bg-black aspect-[1310/854] w-[min(100%,1310px,calc((100dvh-4rem)*1310/854))]';
+const caseStudyMediaClass = 'w-full h-full object-cover';
+const caseStudyVideoClass = 'max-h-full max-w-full object-contain';
+const caseStudyMediaSectionClass =
+  'relative w-screen left-1/2 -translate-x-1/2 flex flex-col items-center px-8 md:px-16';
+const caseStudyBreakoutClass =
+  'relative w-screen left-1/2 -translate-x-1/2 px-8 md:px-16';
+const caseStudyContentWidthClass = 'mx-auto w-full max-w-[1310px]';
+const caseStudyCaptionClass =
+  'text-base leading-[1.6] text-gray-500 dark:text-gray-400 text-center w-full';
+const caseStudyCaptionSlotClass =
+  'flex w-full max-w-[736px] items-start justify-center mx-auto min-h-[2.5rem] pt-4 md:pt-6 lg:pt-8';
+const contentBlockGapClass =
+  'mb-[3rem] md:mb-[4.5rem] lg:mb-[6rem] last:mb-0';
+
+// ~457×295 — ~10% larger than prior 415×268; same 3/1.9 ratio as WorkCard
+const moreProjectCardImageClass =
+  'mb-4 w-full aspect-[3/1.9] overflow-hidden rounded-lg shadow-md';
+const moreProjectCardImageImgClass =
+  'w-full h-full object-cover transition-transform duration-300 group-hover:scale-105';
+
+type ImageSize = 'large' | 'small';
+
+function getCaseStudyImageSectionClass(size?: ImageSize) {
+  return size === 'small'
+    ? 'flex flex-col items-center px-8 md:px-16'
+    : caseStudyMediaSectionClass;
+}
+
+function getCaseStudyImageFrameClass(size?: ImageSize) {
+  return size === 'small'
+    ? 'relative w-full max-w-[655px] aspect-[1310/854] overflow-hidden'
+    : caseStudyMediaFrameClass;
+}
+
+function getCaseStudyCaptionSlotClass(size?: ImageSize) {
+  return size === 'small'
+    ? 'flex w-full max-w-[368px] items-start justify-center mx-auto min-h-[2.5rem] pt-4 md:pt-6 lg:pt-8'
+    : caseStudyCaptionSlotClass;
+}
 
 interface ContentBlock {
   _key: string;
@@ -16,6 +113,7 @@ interface ContentBlock {
     };
   };
   caption?: string;
+  imageSize?: ImageSize;
   videoType?: 'upload' | 'embed';
   videoFile?: {
     asset: {
@@ -43,7 +141,6 @@ interface Project {
   challenge?: string;
   solution?: string;
   results?: string;
-  description: any[]; // Portable text block content
   additionalInfo?: any[]; // Portable text block content
   contentBlocks: ContentBlock[];
 }
@@ -67,33 +164,32 @@ const placeholderProject: Project = {
   challenge: "How can we create a great experience for users that helps the business sell more books?",
   solution: "Tools that enable users to find new cookbooks they'll love.",
   results: "LOTS of positive reviews.",
-  description: [
-    {
-      _type: 'block',
-      _key: 'desc1',
-      style: 'normal',
-      children: [
-        {
-          _type: 'span',
-          _key: 'desc1span',
-          text: "Community Cookbook is an eCommerce store that sells cookbooks, and that provides resources to help users make informed choices about the cookbooks they buy. This personal project was born out of my passion for food, cooking, and cookbooks in general.",
-          marks: [],
-        },
-      ],
-    },
-  ],
   additionalInfo: [
     {
       _type: 'block',
       _key: 'add1',
       style: 'normal',
       children: [
-        {
-          _type: 'span',
-          _key: 'add1span',
-          text: "I started by conducting user interviews and a survey, which provided key insights into the needs and frustrations of cookbook enthusiasts—people who regularly cook and use cookbooks at home and take pride in creating meals for themselves or for friends.",
-          marks: [],
-        },
+        { _type: 'span', _key: 'add1label', text: 'Project type:', marks: ['strong'] },
+        { _type: 'span', _key: 'add1value', text: ' Personal Project', marks: [] },
+      ],
+    },
+    {
+      _type: 'block',
+      _key: 'add2',
+      style: 'normal',
+      children: [
+        { _type: 'span', _key: 'add2label', text: 'Role:', marks: ['strong'] },
+        { _type: 'span', _key: 'add2value', text: ' UX/UI Designer', marks: [] },
+      ],
+    },
+    {
+      _type: 'block',
+      _key: 'add3',
+      style: 'normal',
+      children: [
+        { _type: 'span', _key: 'add3label', text: 'Year:', marks: ['strong'] },
+        { _type: 'span', _key: 'add3value', text: ' 2023', marks: [] },
       ],
     },
   ],
@@ -252,13 +348,6 @@ export function ProjectDetail() {
       };
     };
   }>>([]);
-  const [fullscreenContent, setFullscreenContent] = useState<{
-    type: 'image' | 'video';
-    url: string;
-    caption?: string;
-  } | null>(null);
-  const [scrollPosition, setScrollPosition] = useState(0);
-
   useEffect(() => {
     setLoading(true);
     setProject(null);
@@ -306,7 +395,6 @@ export function ProjectDetail() {
           challenge,
           solution,
           results,
-          description[],
           additionalInfo[],
           contentBlocks[] {
             _key,
@@ -319,6 +407,7 @@ export function ProjectDetail() {
               }
             },
             caption,
+            imageSize,
             videoType,
             videoFile {
               asset-> {
@@ -373,40 +462,6 @@ export function ProjectDetail() {
     }
   }, [slug]);
 
-  const openFullscreen = (type: 'image' | 'video', url: string, caption?: string) => {
-    if (typeof window !== 'undefined') {
-      setScrollPosition(window.scrollY);
-    }
-    setFullscreenContent({ type, url, caption });
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = 'hidden';
-    }
-  };
-
-  const closeFullscreen = () => {
-    const savedPosition = scrollPosition;
-    setFullscreenContent(null);
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = '';
-    }
-    if (typeof window !== 'undefined') {
-      window.scrollTo(0, savedPosition);
-    }
-  };
-
-  useEffect(() => {
-    if (!fullscreenContent || typeof window === 'undefined') return;
-    
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        closeFullscreen();
-      }
-    };
-    window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fullscreenContent]);
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -423,55 +478,26 @@ export function ProjectDetail() {
     );
   }
 
+  const metadataItems = parseMetadataFromPortableText(project.additionalInfo);
+  const projectType = getMetadataValue(metadataItems, 'project type');
+  const role = getMetadataValue(metadataItems, 'role');
+  const year = getMetadataValue(metadataItems, 'year');
+  const hasTags = project.tags && project.tags.length > 0;
+  const metadataFields = [
+    { key: 'project type', fallbackLabel: 'Project Type', value: projectType },
+    { key: 'role', fallbackLabel: 'Role', value: role },
+    { key: 'year', fallbackLabel: 'Year', value: year },
+  ].filter((field) => field.value);
+
   return (
-    <>
-      {fullscreenContent && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center"
-          onClick={closeFullscreen}
-        >
-          <button
-            onClick={closeFullscreen}
-            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10"
-            aria-label="Close fullscreen"
-          >
-            <X className="w-8 h-8" />
-          </button>
-          <div className="max-w-[95vw] max-h-[95vh] flex items-center justify-center">
-            {fullscreenContent.type === 'image' ? (
-              <img
-                src={fullscreenContent.url}
-                alt={fullscreenContent.caption || 'Fullscreen image'}
-                className="max-w-full max-h-[95vh] object-contain"
-                onClick={(e) => e.stopPropagation()}
-              />
-            ) : (
-              <video
-                src={fullscreenContent.url}
-                controls
-                autoPlay
-                className="max-w-full max-h-[95vh]"
-                onClick={(e) => e.stopPropagation()}
-              >
-                Your browser does not support the video tag.
-              </video>
-            )}
-          </div>
-          {fullscreenContent.caption && (
-            <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/50 px-4 py-2 rounded">
-              {fullscreenContent.caption}
-            </p>
-          )}
-        </div>
-      )}
     <div>
       {/* Hero Section - Full Width */}
       {project.heroImage && (
-        <div className="relative w-full h-[400px] lg:h-[534px] mb-16">
+        <div className="relative w-full min-h-[calc(100dvh-6.5rem)] mb-12 md:mb-16 lg:mb-20 overflow-hidden">
           <img 
             src={project.heroImage.asset.url}
             alt={project.title}
-            className="w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
           />
           <div className="absolute inset-0 flex flex-col justify-end items-center px-8 md:px-16 pb-12 lg:pb-16 bg-black bg-opacity-50">
             <div className="text-center max-w-[1200px]">
@@ -488,128 +514,104 @@ export function ProjectDetail() {
         </div>
       )}
 
-      <div className="px-8 md:px-16 pb-12 md:pb-16">
-        <div className="max-w-[1200px] mx-auto">
-          
+      <div className="pb-12 md:pb-16">
+        <div className={caseStudyBreakoutClass}>
+          <div className={`${caseStudyContentWidthClass} overflow-visible`}>
+
           {/* Logo + Challenge/Solution/Results Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-8">
-            {/* Project Logo */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-12 md:mb-16 lg:mb-20">
             {project.logo && (
               <div className="lg:col-span-1 flex justify-center lg:justify-start animate-slide-in-left opacity-0 [animation-delay:0ms] [animation-duration:0.9s]">
                 <img 
                   src={project.logo.asset.url}
                   alt={`${project.title} logo`}
-                  className="w-full max-w-[200px] lg:max-w-[240px] h-auto object-cover rounded-lg"
+                  className="w-full max-w-[200px] lg:max-w-[240px] h-auto max-h-[280px] object-contain"
                 />
               </div>
             )}
             
-            {/* Three text columns */}
-            <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-8">
-              {project.challenge && (
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-8 animate-slide-in-left opacity-0 [animation-delay:250ms] [animation-duration:0.9s]">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                    Challenge
-                  </h2>
-                  <p className="text-base text-gray-700 dark:text-gray-300">
-                    {project.challenge}
-                  </p>
+            <div className="lg:col-span-3 flex flex-col gap-8">
+              {(project.challenge || project.solution || project.results) && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-8 animate-slide-in-left opacity-0 [animation-delay:250ms] [animation-duration:0.9s]">
+                    {project.challenge && (
+                      <>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                          Challenge
+                        </h2>
+                        <p className="text-lg leading-[1.6] text-gray-700 dark:text-gray-300">
+                          {project.challenge}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-8 animate-slide-in-left opacity-0 [animation-delay:500ms] [animation-duration:0.9s]">
+                    {project.solution && (
+                      <>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                          Solution
+                        </h2>
+                        <p className="text-lg leading-[1.6] text-gray-700 dark:text-gray-300">
+                          {project.solution}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-8 animate-slide-in-left opacity-0 [animation-delay:750ms] [animation-duration:0.9s]">
+                    {project.results && (
+                      <>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                          Results
+                        </h2>
+                        <p className="text-lg leading-[1.6] text-gray-700 dark:text-gray-300">
+                          {project.results}
+                        </p>
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
-              {project.solution && (
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-8 animate-slide-in-left opacity-0 [animation-delay:500ms] [animation-duration:0.9s]">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                    Solution
-                  </h2>
-                  <p className="text-base text-gray-700 dark:text-gray-300">
-                    {project.solution}
-                  </p>
-                </div>
-              )}
-              {project.results && (
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-8 animate-slide-in-left opacity-0 [animation-delay:750ms] [animation-duration:0.9s]">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                    Results
-                  </h2>
-                  <p className="text-base text-gray-700 dark:text-gray-300">
-                    {project.results}
-                  </p>
+
+              {(metadataFields.length > 0 || hasTags) && (
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-6 lg:pt-8">
+                  <div className="flex flex-wrap items-start gap-x-10 lg:gap-x-12 gap-y-4">
+                    {metadataFields.map(({ key, fallbackLabel, value }) => (
+                      <div key={key}>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
+                          {findMetadataItem(metadataItems, key)?.label || fallbackLabel}
+                        </p>
+                        <p className="text-lg leading-[1.6] text-gray-700 dark:text-gray-300">
+                          {value}
+                        </p>
+                      </div>
+                    ))}
+                    {hasTags && (
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
+                          Areas of Expertise
+                        </p>
+                        <div className="flex flex-nowrap gap-3">
+                          {project.tags.map((tag, index) => (
+                            <span
+                              key={index}
+                              className="shrink-0 whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md ring-1 ring-gray-300 dark:ring-gray-600 bg-white dark:bg-gray-800"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Description + Additional Info Grid */}
-          {(project.description || project.additionalInfo) && (
-            <ScrollReveal className="flex justify-center mb-16">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full max-w-[1200px]">
-                {project.description && (
-                  <div className="lg:col-span-2">
-                    <div className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
-                      <PortableText
-                        value={project.description}
-                        components={{
-                          block: {
-                            normal: ({ children }) => <p className="mb-4">{children}</p>,
-                          },
-                          marks: {
-                            strong: ({ children }) => <strong className="font-bold">{children}</strong>,
-                            em: ({ children }) => <em className="italic">{children}</em>,
-                            link: ({ value, children }) => (
-                              <a href={value?.href} className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">
-                                {children}
-                              </a>
-                            ),
-                          },
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-                {project.additionalInfo && (
-                  <div className="lg:col-span-1">
-                    <div className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
-                      <PortableText
-                        value={project.additionalInfo}
-                        components={{
-                          block: {
-                            normal: ({ children }) => <p className="mb-4">{children}</p>,
-                          },
-                          marks: {
-                            strong: ({ children }) => <strong className="font-bold">{children}</strong>,
-                            em: ({ children }) => <em className="italic">{children}</em>,
-                            link: ({ value, children }) => (
-                              <a href={value?.href} className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">
-                                {children}
-                              </a>
-                            ),
-                          },
-                        }}
-                      />
-                    </div>
-                    {project.tags && project.tags.length > 0 && (
-                      <div className="mt-6 flex flex-wrap gap-3">
-                        {project.tags.map((tag, index) => (
-                          <span
-                            key={index}
-                            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </ScrollReveal>
-          )}
-
           {/* Content Blocks */}
-          <div className="space-y-8 md:space-y-12 lg:space-y-16">
+          <div>
             {project.contentBlocks?.map((block) => (
-              <ScrollReveal key={block._key}>
-                <div>
+              <ScrollReveal key={block._key} className={contentBlockGapClass}>
                 {block._type === 'textBlock' && (
                   <div className="max-w-3xl mx-auto">
                     {block.heading && (
@@ -618,7 +620,7 @@ export function ProjectDetail() {
                       </h2>
                     )}
                     {block.text && (
-                      <div className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
+                      <div className="text-xl md:text-[1.375rem] lg:text-2xl text-gray-700 dark:text-gray-300 leading-[1.8]">
                         <PortableText
                           value={block.text}
                           components={{
@@ -652,72 +654,56 @@ export function ProjectDetail() {
                 )}
 
                 {block._type === 'imageBlock' && block.image && (
-                  <div className="w-full">
-                    <div className="flex justify-center">
-                      <div 
-                        className="relative group cursor-pointer"
-                        onClick={() => openFullscreen('image', block.image!.asset.url, block.caption)}
-                      >
-                        <img 
-                          src={block.image.asset.url}
-                          alt={block.caption || ''}
-                          className="w-auto h-auto max-w-full max-h-[296px] sm:max-w-[469px] sm:max-h-[296px] md:max-w-[563px] md:max-h-[355px] lg:max-w-[750px] lg:max-h-[474px] xl:max-w-[938px] xl:max-h-[593px] proj:max-w-[990px] proj:max-h-[626px]"
-                        />
-                        <div className="absolute bottom-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded transition-all opacity-0 group-hover:opacity-100">
-                          <Maximize2 className="w-5 h-5" />
-                        </div>
-                      </div>
+                  <figure className={getCaseStudyImageSectionClass(block.imageSize)}>
+                    <div className={getCaseStudyImageFrameClass(block.imageSize)}>
+                      <img
+                        src={block.image.asset.url}
+                        alt={block.caption || ''}
+                        className={caseStudyMediaClass}
+                      />
                     </div>
-                    {block.caption && (
-                      <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-4">
-                        {block.caption}
-                      </p>
-                    )}
-                  </div>
+                    <div className={getCaseStudyCaptionSlotClass(block.imageSize)}>
+                      {block.caption && (
+                        <figcaption className={caseStudyCaptionClass}>
+                          {block.caption}
+                        </figcaption>
+                      )}
+                    </div>
+                  </figure>
                 )}
 
                 {block._type === 'videoBlock' && (
-                  <div className="w-full">
+                  <figure className={caseStudyMediaSectionClass}>
                     {block.videoType === 'upload' && block.videoFile?.asset?.url ? (
-                      <div className="flex justify-center">
-                        <div className="relative group cursor-pointer">
-                          <video 
-                            src={block.videoFile.asset.url}
-                            controls
-                            className="w-auto h-auto max-w-full max-h-[296px] sm:max-w-[469px] sm:max-h-[296px] md:max-w-[563px] md:max-h-[355px] lg:max-w-[750px] lg:max-h-[474px] xl:max-w-[938px] xl:max-h-[593px] proj:max-w-[990px] proj:max-h-[626px] bg-black"
-                          >
-                            Your browser does not support the video tag.
-                          </video>
-                          <div 
-                            className="absolute bottom-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded transition-all opacity-0 group-hover:opacity-100 z-10"
-                            onClick={() => openFullscreen('video', block.videoFile!.asset.url, block.caption)}
-                          >
-                            <Maximize2 className="w-5 h-5" />
-                          </div>
-                        </div>
+                      <div className={caseStudyVideoFrameClass}>
+                        <video
+                          src={block.videoFile.asset.url}
+                          controls
+                          className={caseStudyVideoClass}
+                        >
+                          Your browser does not support the video tag.
+                        </video>
                       </div>
                     ) : block.videoType === 'embed' && block.embedUrl ? (
-                      <div className="flex justify-center">
-                        <div className="relative w-full max-w-full aspect-video max-h-[296px] sm:max-w-[469px] sm:max-h-[296px] md:max-w-[563px] md:max-h-[355px] lg:max-w-[750px] lg:max-h-[474px] xl:max-w-[938px] xl:max-h-[593px] proj:max-w-[990px] proj:max-h-[626px]">
-                          <iframe
-                            src={getEmbedUrl(block.embedUrl)}
-                            className="absolute inset-0 w-full h-full"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                            title="Video player"
-                          />
-                        </div>
+                      <div className={`${caseStudyVideoFrameClass} overflow-hidden`}>
+                        <iframe
+                          src={getEmbedUrl(block.embedUrl)}
+                          className="absolute inset-0 h-full w-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          title="Video player"
+                        />
                       </div>
                     ) : null}
-                    {block.caption && (
-                      <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-4">
-                        {block.caption}
-                      </p>
-                    )}
-                  </div>
+                    <div className={caseStudyCaptionSlotClass}>
+                      {block.caption && (
+                        <figcaption className={caseStudyCaptionClass}>
+                          {block.caption}
+                        </figcaption>
+                      )}
+                    </div>
+                  </figure>
                 )}
-
-                </div>
               </ScrollReveal>
             ))}
           </div>
@@ -727,23 +713,23 @@ export function ProjectDetail() {
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-8">
               More Projects
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 w-full md:w-[min(1440px,calc(100vw-8rem))]">
               {moreProjects.length > 0 ? (
                 moreProjects.map((proj) => (
-                  <Link 
+                  <Link
                     key={proj.slug}
                     to={`/work/${proj.slug}`}
-                    className="group"
+                    className="group flex flex-col w-full"
                   >
-                    <div className="mb-4 overflow-hidden rounded-lg shadow-md">
+                    <div className={moreProjectCardImageClass}>
                       {proj.screenshot?.asset?.url ? (
-                        <img 
+                        <img
                           src={proj.screenshot.asset.url}
                           alt={proj.title}
-                          className="w-full max-w-full md:max-w-[350px] lg:max-w-[405px] h-auto transition-transform duration-300 group-hover:scale-105"
+                          className={moreProjectCardImageImgClass}
                         />
                       ) : (
-                        <div className="w-full max-w-full md:max-w-[350px] lg:max-w-[405px] aspect-[3/2] bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                        <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                           <span className="text-gray-400 text-sm">No image</span>
                         </div>
                       )}
@@ -765,23 +751,25 @@ export function ProjectDetail() {
           </ScrollReveal>
 
           {/* Footer */}
-          <footer className="border-t border-gray-200 dark:border-gray-700 mt-16 pt-8">
-            <div className="flex justify-between items-center">
-              <p className="text-gray-600 dark:text-gray-400">
-                Brendan Bockes · {new Date().getFullYear()}
-              </p>
-              <button
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded hover:bg-blue-600 dark:hover:bg-blue-500 transition-all hover:-translate-y-1 text-sm font-medium"
-              >
-                Back to Top
-              </button>
+          <footer className="mt-16">
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
+              <div className="flex justify-between items-center">
+                <p className="text-gray-600 dark:text-gray-400">
+                  Brendan Bockes · {new Date().getFullYear()}
+                </p>
+                <button
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded hover:bg-blue-600 dark:hover:bg-blue-500 transition-all hover:-translate-y-1 text-sm font-medium"
+                >
+                  Back to Top
+                </button>
+              </div>
             </div>
           </footer>
 
+          </div>
         </div>
       </div>
     </div>
-    </>
   );
 }

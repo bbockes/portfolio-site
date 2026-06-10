@@ -89,40 +89,6 @@ export const projectType = defineType({
       description: 'The outcomes or results achieved',
     }),
     defineField({
-      name: 'description',
-      title: 'Short Description',
-      type: 'array',
-      of: [
-        {
-          type: 'block',
-          styles: [
-            { title: 'Normal', value: 'normal' },
-          ],
-          marks: {
-            decorators: [
-              { title: 'Strong', value: 'strong' },
-              { title: 'Emphasis', value: 'em' },
-            ],
-            annotations: [
-              {
-                name: 'link',
-                type: 'object',
-                title: 'URL',
-                fields: [
-                  {
-                    title: 'URL',
-                    name: 'href',
-                    type: 'url',
-                  },
-                ],
-              },
-            ],
-          },
-        },
-      ],
-      description: 'Brief description shown at the top of the case study',
-    }),
-    defineField({
       name: 'additionalInfo',
       title: 'Additional Info',
       type: 'array',
@@ -154,7 +120,7 @@ export const projectType = defineType({
           },
         },
       ],
-      description: 'Additional context or information displayed alongside the description',
+      description: 'Project metadata (e.g. Project type, Role, Year) using bold labels',
     }),
     defineField({
       name: 'contentBlocks',
@@ -239,11 +205,33 @@ export const projectType = defineType({
               title: 'Caption (optional)',
               type: 'string',
             }),
+            defineField({
+              name: 'imageSize',
+              title: 'Image Size',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'Large (full width)', value: 'large' },
+                  { title: 'Small (50%)', value: 'small' },
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'large',
+            }),
           ],
           preview: {
             select: {
               media: 'image',
               title: 'name',
+              imageSize: 'imageSize',
+            },
+            prepare({ title, media, imageSize }) {
+              const sizeLabel = imageSize === 'small' ? 'Small' : 'Large';
+              return {
+                title: title || 'Image Block',
+                subtitle: sizeLabel,
+                media,
+              };
             },
           },
         },

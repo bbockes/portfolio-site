@@ -7,7 +7,14 @@ export default {
   theme: {
     extend: {
       screens: {
-        proj: '1351px', // content block images target 900×569 at this viewport
+        proj: '1351px',
+      },
+      aspectRatio: {
+        'case-study': '1310 / 854',
+      },
+      maxWidth: {
+        'case-study': '1310px',
+        'case-study-caption': '736px',
       },
       fontFamily: {
         'sans': ['Avenir Next', 'Avenir', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
