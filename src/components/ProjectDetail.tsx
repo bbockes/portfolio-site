@@ -4,60 +4,6 @@ import { PortableText } from '@portabletext/react';
 import { sanityClient } from '../lib/sanityClient';
 import { ScrollReveal } from '../shared/ScrollReveal';
 
-interface MetadataItem {
-  label: string;
-  value: string;
-}
-
-function parseMetadataFromPortableText(blocks?: any[]): MetadataItem[] {
-  if (!blocks) return [];
-
-  return blocks.flatMap((block) => {
-    if (block._type !== 'block' || !block.children) return [];
-
-    const items: MetadataItem[] = [];
-    let label = '';
-    let value = '';
-
-    const flush = () => {
-      const cleanLabel = label.replace(/:$/, '').trim();
-      const cleanValue = value.trim();
-      if (cleanLabel && cleanValue) {
-        items.push({ label: cleanLabel, value: cleanValue });
-      }
-      label = '';
-      value = '';
-    };
-
-    for (const child of block.children) {
-      if (child._type !== 'span') continue;
-      const text = child.text || '';
-      const isStrong = child.marks?.includes('strong');
-
-      if (isStrong) {
-        if (value) flush();
-        label += text;
-      } else {
-        value += text;
-      }
-    }
-
-    flush();
-    return items;
-  });
-}
-
-function findMetadataItem(items: MetadataItem[], ...keywords: string[]): MetadataItem | undefined {
-  const normalize = (text: string) => text.toLowerCase().replace(/[^a-z0-9]/g, '');
-  return items.find(({ label }) =>
-    keywords.some((keyword) => normalize(label) === normalize(keyword))
-  );
-}
-
-function getMetadataValue(items: MetadataItem[], ...keywords: string[]): string | undefined {
-  return findMetadataItem(items, ...keywords)?.value;
-}
-
 const caseStudyMediaFrameClass =
   'relative w-full max-w-[1310px] aspect-[1310/854] overflow-hidden';
 const caseStudyVideoFrameClass =
@@ -156,7 +102,9 @@ interface Project {
   challenge?: string;
   solution?: string;
   results?: string;
-  additionalInfo?: any[]; // Portable text block content
+  projectType?: string;
+  role?: string;
+  year?: string;
   contentBlocks: ContentBlock[];
 }
 
@@ -179,35 +127,9 @@ const placeholderProject: Project = {
   challenge: "How can we create a great experience for users that helps the business sell more books?",
   solution: "Tools that enable users to find new cookbooks they'll love.",
   results: "LOTS of positive reviews.",
-  additionalInfo: [
-    {
-      _type: 'block',
-      _key: 'add1',
-      style: 'normal',
-      children: [
-        { _type: 'span', _key: 'add1label', text: 'Project type:', marks: ['strong'] },
-        { _type: 'span', _key: 'add1value', text: ' Personal Project', marks: [] },
-      ],
-    },
-    {
-      _type: 'block',
-      _key: 'add2',
-      style: 'normal',
-      children: [
-        { _type: 'span', _key: 'add2label', text: 'Role:', marks: ['strong'] },
-        { _type: 'span', _key: 'add2value', text: ' UX/UI Designer', marks: [] },
-      ],
-    },
-    {
-      _type: 'block',
-      _key: 'add3',
-      style: 'normal',
-      children: [
-        { _type: 'span', _key: 'add3label', text: 'Year:', marks: ['strong'] },
-        { _type: 'span', _key: 'add3value', text: ' 2023', marks: [] },
-      ],
-    },
-  ],
+  projectType: "Personal Project",
+  role: "UX/UI Designer",
+  year: "2023",
   contentBlocks: [
     {
       _key: "1",
@@ -410,7 +332,9 @@ export function ProjectDetail() {
           challenge,
           solution,
           results,
-          additionalInfo[],
+          projectType,
+          role,
+          year,
           contentBlocks[] {
             _key,
             _type,
@@ -493,15 +417,11 @@ export function ProjectDetail() {
     );
   }
 
-  const metadataItems = parseMetadataFromPortableText(project.additionalInfo);
-  const projectType = getMetadataValue(metadataItems, 'project type');
-  const role = getMetadataValue(metadataItems, 'role');
-  const year = getMetadataValue(metadataItems, 'year');
   const hasTags = project.tags && project.tags.length > 0;
   const metadataFields = [
-    { key: 'project type', fallbackLabel: 'Project Type', value: projectType },
-    { key: 'role', fallbackLabel: 'Role', value: role },
-    { key: 'year', fallbackLabel: 'Year', value: year },
+    { label: 'Project Type', value: project.projectType },
+    { label: 'Role', value: project.role },
+    { label: 'Year', value: project.year },
   ].filter((field) => field.value);
 
   return (
@@ -590,10 +510,10 @@ export function ProjectDetail() {
               {(metadataFields.length > 0 || hasTags) && (
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-6 lg:pt-8">
                   <div className="flex flex-wrap items-start gap-x-10 lg:gap-x-12 gap-y-4">
-                    {metadataFields.map(({ key, fallbackLabel, value }) => (
-                      <div key={key}>
+                    {metadataFields.map(({ label, value }) => (
+                      <div key={label}>
                         <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
-                          {findMetadataItem(metadataItems, key)?.label || fallbackLabel}
+                          {label}
                         </p>
                         <p className="text-lg leading-[1.6] text-gray-700 dark:text-gray-300">
                           {value}

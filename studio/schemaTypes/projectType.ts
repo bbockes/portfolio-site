@@ -61,13 +61,6 @@ export const projectType = defineType({
       description: 'Optional project logo displayed alongside challenge/solution/results',
     }),
     defineField({
-      name: 'tags',
-      title: 'Tags',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'e.g. SEO, CRO, UX/UI, Content Strategy',
-    }),
-    defineField({
       name: 'challenge',
       title: 'Challenge',
       type: 'text',
@@ -89,38 +82,29 @@ export const projectType = defineType({
       description: 'The outcomes or results achieved',
     }),
     defineField({
-      name: 'additionalInfo',
-      title: 'Additional Info',
+      name: 'projectType',
+      title: 'Project Type',
+      type: 'string',
+      description: 'e.g. Personal Project, Client Work, Agency Project',
+    }),
+    defineField({
+      name: 'role',
+      title: 'Role',
+      type: 'string',
+      description: 'e.g. UX/UI Designer, Lead Developer',
+    }),
+    defineField({
+      name: 'year',
+      title: 'Year',
+      type: 'string',
+      description: 'e.g. 2023',
+    }),
+    defineField({
+      name: 'tags',
+      title: 'Tags',
       type: 'array',
-      of: [
-        {
-          type: 'block',
-          styles: [
-            { title: 'Normal', value: 'normal' },
-          ],
-          marks: {
-            decorators: [
-              { title: 'Strong', value: 'strong' },
-              { title: 'Emphasis', value: 'em' },
-            ],
-            annotations: [
-              {
-                name: 'link',
-                type: 'object',
-                title: 'URL',
-                fields: [
-                  {
-                    title: 'URL',
-                    name: 'href',
-                    type: 'url',
-                  },
-                ],
-              },
-            ],
-          },
-        },
-      ],
-      description: 'Project metadata (e.g. Project type, Role, Year) using bold labels',
+      of: [{ type: 'string' }],
+      description: 'e.g. SEO, CRO, UX/UI, Content Strategy',
     }),
     defineField({
       name: 'contentBlocks',
