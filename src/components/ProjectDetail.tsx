@@ -82,24 +82,39 @@ const moreProjectCardImageClass =
 const moreProjectCardImageImgClass =
   'w-full h-full object-cover transition-transform duration-300 group-hover:scale-105';
 
-type ImageSize = 'large' | 'small';
+type ImageSize = 'large' | 'small' | 'wide';
 
 function getCaseStudyImageSectionClass(size?: ImageSize) {
-  return size === 'small'
-    ? 'flex flex-col items-center px-8 md:px-16'
-    : caseStudyMediaSectionClass;
+  switch (size) {
+    case 'small':
+      return 'flex flex-col items-center px-8 md:px-16';
+    case 'wide':
+      return 'relative w-screen left-1/2 -translate-x-1/2 flex flex-col items-center';
+    default:
+      return caseStudyMediaSectionClass;
+  }
 }
 
 function getCaseStudyImageFrameClass(size?: ImageSize) {
-  return size === 'small'
-    ? 'relative w-full max-w-[655px] aspect-[1310/854] overflow-hidden'
-    : caseStudyMediaFrameClass;
+  switch (size) {
+    case 'small':
+      return 'relative w-full max-w-[655px] aspect-[1310/854] overflow-hidden';
+    case 'wide':
+      return 'relative w-full overflow-hidden h-[min(calc(100vw*854/1310),calc(100dvh-6.5rem))]';
+    default:
+      return caseStudyMediaFrameClass;
+  }
 }
 
 function getCaseStudyCaptionSlotClass(size?: ImageSize) {
-  return size === 'small'
-    ? 'flex w-full max-w-[368px] items-start justify-center mx-auto min-h-[2.5rem] pt-4 md:pt-6 lg:pt-8'
-    : caseStudyCaptionSlotClass;
+  switch (size) {
+    case 'small':
+      return 'flex w-full max-w-[368px] items-start justify-center mx-auto min-h-[2.5rem] pt-4 md:pt-6 lg:pt-8';
+    case 'wide':
+      return `${caseStudyCaptionSlotClass} px-8 md:px-16`;
+    default:
+      return caseStudyCaptionSlotClass;
+  }
 }
 
 interface ContentBlock {

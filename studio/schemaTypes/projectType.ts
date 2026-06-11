@@ -211,7 +211,8 @@ export const projectType = defineType({
               type: 'string',
               options: {
                 list: [
-                  { title: 'Large (full width)', value: 'large' },
+                  { title: 'Large (with margins)', value: 'large' },
+                  { title: 'Wide (edge to edge)', value: 'wide' },
                   { title: 'Small (50%)', value: 'small' },
                 ],
                 layout: 'radio',
@@ -226,7 +227,12 @@ export const projectType = defineType({
               imageSize: 'imageSize',
             },
             prepare({ title, media, imageSize }) {
-              const sizeLabel = imageSize === 'small' ? 'Small' : 'Large';
+              const sizeLabels: Record<string, string> = {
+                small: 'Small',
+                large: 'Large',
+                wide: 'Wide',
+              };
+              const sizeLabel = sizeLabels[imageSize] ?? 'Large';
               return {
                 title: title || 'Image Block',
                 subtitle: sizeLabel,
