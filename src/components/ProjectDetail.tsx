@@ -5,10 +5,10 @@ import { sanityClient } from '../lib/sanityClient';
 import { ScrollReveal } from '../shared/ScrollReveal';
 
 const caseStudyMediaFrameClass =
-  'relative w-full max-w-[1310px] aspect-[1310/854] overflow-hidden';
+  'relative mx-auto aspect-[1310/854] overflow-hidden w-[min(100%,1310px,calc(768px*1310/854))] max-h-[768px]';
 const caseStudyVideoFrameClass =
   'relative mx-auto flex items-center justify-center bg-black aspect-[1310/854] w-[min(100%,1310px,calc((100dvh-4rem)*1310/854))]';
-const caseStudyMediaClass = 'w-full h-full object-cover';
+const caseStudyMediaClass = 'block w-full h-full object-cover';
 const caseStudyVideoClass = 'max-h-full max-w-full object-contain';
 const caseStudyMediaSectionClass =
   'relative w-screen left-1/2 -translate-x-1/2 flex flex-col items-center px-8 md:px-16';
@@ -18,9 +18,9 @@ const caseStudyContentWidthClass = 'mx-auto w-full max-w-[1310px]';
 const caseStudyCaptionClass =
   'text-base leading-[1.6] text-gray-500 dark:text-gray-400 text-center w-full';
 const caseStudyCaptionSlotClass =
-  'flex w-full max-w-[736px] items-start justify-center mx-auto min-h-[2.5rem] pt-4 md:pt-6 lg:pt-8';
+  'absolute top-full left-1/2 -translate-x-1/2 w-full max-w-[736px] pt-2 md:pt-3 lg:pt-4';
 const contentBlockGapClass =
-  'mb-[3rem] md:mb-[4.5rem] lg:mb-[6rem] last:mb-0';
+  'gap-[3rem] md:gap-[4.5rem] lg:gap-[6rem]';
 
 // ~457×295 — ~10% larger than prior 415×268; same 3/1.9 ratio as WorkCard
 const moreProjectCardImageClass =
@@ -33,7 +33,7 @@ type ImageSize = 'large' | 'small' | 'wide';
 function getCaseStudyImageSectionClass(size?: ImageSize) {
   switch (size) {
     case 'small':
-      return 'flex flex-col items-center px-8 md:px-16';
+      return 'relative flex flex-col items-center px-8 md:px-16';
     case 'wide':
       return 'relative w-screen left-1/2 -translate-x-1/2 flex flex-col items-center';
     default:
@@ -46,16 +46,20 @@ function getCaseStudyImageFrameClass(size?: ImageSize) {
     case 'small':
       return 'relative w-full max-w-[655px] aspect-[1310/854] overflow-hidden';
     case 'wide':
-      return 'relative w-full overflow-hidden h-[min(calc(100vw*854/1310),calc(100dvh-6.5rem))]';
+      return 'relative w-full';
     default:
       return caseStudyMediaFrameClass;
   }
 }
 
+function getCaseStudyImageClass(size?: ImageSize) {
+  return size === 'wide' ? 'block w-full h-auto' : caseStudyMediaClass;
+}
+
 function getCaseStudyCaptionSlotClass(size?: ImageSize) {
   switch (size) {
     case 'small':
-      return 'flex w-full max-w-[368px] items-start justify-center mx-auto min-h-[2.5rem] pt-4 md:pt-6 lg:pt-8';
+      return 'absolute top-full left-1/2 -translate-x-1/2 w-full max-w-[368px] pt-2 md:pt-3 lg:pt-4';
     case 'wide':
       return `${caseStudyCaptionSlotClass} px-8 md:px-16`;
     default:
@@ -71,6 +75,12 @@ interface ContentBlock {
   image?: {
     asset: {
       url: string;
+      metadata?: {
+        dimensions?: {
+          width: number;
+          height: number;
+        };
+      };
     };
   };
   caption?: string;
@@ -342,7 +352,13 @@ export function ProjectDetail() {
             text[],
             image {
               asset-> {
-                url
+                url,
+                metadata {
+                  dimensions {
+                    width,
+                    height
+                  }
+                }
               }
             },
             caption,
@@ -544,9 +560,17 @@ export function ProjectDetail() {
           </div>
 
           {/* Content Blocks */}
-          <div>
-            {project.contentBlocks?.map((block) => (
-              <ScrollReveal key={block._key} className={contentBlockGapClass}>
+          <div className={`flex flex-col ${contentBlockGapClass}`}>
+            {project.contentBlocks?.map((block) => {
+              const hasMediaCaption =
+                (block._type === 'imageBlock' || block._type === 'videoBlock') &&
+                Boolean(block.caption);
+
+              return (
+              <ScrollReveal
+                key={block._key}
+                className={hasMediaCaption ? 'pb-[10px]' : ''}
+              >
                 {block._type === 'textBlock' && (
                   <div className="max-w-3xl mx-auto">
                     {block.heading && (
@@ -555,14 +579,14 @@ export function ProjectDetail() {
                       </h2>
                     )}
                     {block.text && (
-                      <div className="text-xl md:text-[1.375rem] lg:text-2xl text-gray-700 dark:text-gray-300 leading-[1.8]">
+                      <div className="text-xl md:text-[1.375rem] lg:text-2xl text-gray-700 dark:text-gray-300 leading-[1.8] space-y-4">
                         <PortableText
                           value={block.text}
                           components={{
                             block: {
-                              normal: ({ children }) => <p className="mb-4">{children}</p>,
-                              h2: ({ children }) => <h2 className="text-2xl font-bold mb-4 mt-6">{children}</h2>,
-                              h3: ({ children }) => <h3 className="text-xl font-bold mb-3 mt-4">{children}</h3>,
+                              normal: ({ children }) => <p>{children}</p>,
+                              h2: ({ children }) => <h2 className="text-2xl font-bold mt-6">{children}</h2>,
+                              h3: ({ children }) => <h3 className="text-xl font-bold mt-4">{children}</h3>,
                             },
                             marks: {
                               strong: ({ children }) => <strong className="font-bold">{children}</strong>,
@@ -574,8 +598,8 @@ export function ProjectDetail() {
                               ),
                             },
                             list: {
-                              bullet: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-2">{children}</ul>,
-                              number: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-2">{children}</ol>,
+                              bullet: ({ children }) => <ul className="list-disc list-inside space-y-2">{children}</ul>,
+                              number: ({ children }) => <ol className="list-decimal list-inside space-y-2">{children}</ol>,
                             },
                             listItem: {
                               bullet: ({ children }) => <li>{children}</li>,
@@ -589,26 +613,31 @@ export function ProjectDetail() {
                 )}
 
                 {block._type === 'imageBlock' && block.image && (
-                  <figure className={getCaseStudyImageSectionClass(block.imageSize)}>
+                  <figure className={`${getCaseStudyImageSectionClass(block.imageSize)} m-0`}>
                     <div className={getCaseStudyImageFrameClass(block.imageSize)}>
                       <img
                         src={block.image.asset.url}
                         alt={block.caption || ''}
-                        className={caseStudyMediaClass}
+                        className={getCaseStudyImageClass(block.imageSize)}
+                        {...(block.imageSize === 'wide' &&
+                        block.image.asset.metadata?.dimensions
+                          ? {
+                              width: block.image.asset.metadata.dimensions.width,
+                              height: block.image.asset.metadata.dimensions.height,
+                            }
+                          : {})}
                       />
                     </div>
-                    <div className={getCaseStudyCaptionSlotClass(block.imageSize)}>
-                      {block.caption && (
-                        <figcaption className={caseStudyCaptionClass}>
-                          {block.caption}
-                        </figcaption>
-                      )}
-                    </div>
+                    {block.caption && (
+                      <figcaption className={`${getCaseStudyCaptionSlotClass(block.imageSize)} ${caseStudyCaptionClass}`}>
+                        {block.caption}
+                      </figcaption>
+                    )}
                   </figure>
                 )}
 
                 {block._type === 'videoBlock' && (
-                  <figure className={caseStudyMediaSectionClass}>
+                  <figure className={`${caseStudyMediaSectionClass} m-0`}>
                     {block.videoType === 'upload' && block.videoFile?.asset?.url ? (
                       <div className={caseStudyVideoFrameClass}>
                         <video
@@ -630,17 +659,16 @@ export function ProjectDetail() {
                         />
                       </div>
                     ) : null}
-                    <div className={caseStudyCaptionSlotClass}>
-                      {block.caption && (
-                        <figcaption className={caseStudyCaptionClass}>
-                          {block.caption}
-                        </figcaption>
-                      )}
-                    </div>
+                    {block.caption && (
+                      <figcaption className={`${caseStudyCaptionSlotClass} ${caseStudyCaptionClass}`}>
+                        {block.caption}
+                      </figcaption>
+                    )}
                   </figure>
                 )}
               </ScrollReveal>
-            ))}
+              );
+            })}
           </div>
 
           {/* More Projects */}
