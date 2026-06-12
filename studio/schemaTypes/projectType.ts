@@ -28,7 +28,7 @@ export const projectType = defineType({
       options: {
         hotspot: true,
       },
-      description: 'Image displayed on the homepage work card',
+      description: 'Homepage work card and More Projects row. Export at 1200×760 px (3:1.9 ratio).',
     }),
     defineField({
       name: 'bgColor',
@@ -49,7 +49,7 @@ export const projectType = defineType({
       options: {
         hotspot: true,
       },
-      description: 'Main hero image displayed at the top of the case study page',
+      description: 'Full-viewport hero. Export at 2560×1440 px minimum (3840×2160 ideal). ~16:9 works best.',
     }),
     defineField({
       name: 'logo',
@@ -58,7 +58,7 @@ export const projectType = defineType({
       options: {
         hotspot: true,
       },
-      description: 'Optional project logo displayed alongside challenge/solution/results',
+      description: 'Displayed at 200×200 px. Export at 400×400 px (@2×). PNG or SVG recommended.',
     }),
     defineField({
       name: 'challenge',
@@ -183,43 +183,24 @@ export const projectType = defineType({
               options: {
                 hotspot: true,
               },
+              description: 'Full-width case study image. Export at 2560 px wide; height is natural (no fixed ratio).',
             }),
             defineField({
               name: 'caption',
               title: 'Caption (optional)',
               type: 'string',
             }),
-            defineField({
-              name: 'imageSize',
-              title: 'Image Size',
-              type: 'string',
-              options: {
-                list: [
-                  { title: 'Large (with margins)', value: 'large' },
-                  { title: 'Wide (edge to edge)', value: 'wide' },
-                  { title: 'Small (50%)', value: 'small' },
-                ],
-                layout: 'radio',
-              },
-              initialValue: 'large',
-            }),
           ],
           preview: {
             select: {
               media: 'image',
               title: 'name',
-              imageSize: 'imageSize',
+              caption: 'caption',
             },
-            prepare({ title, media, imageSize }) {
-              const sizeLabels: Record<string, string> = {
-                small: 'Small',
-                large: 'Large',
-                wide: 'Wide',
-              };
-              const sizeLabel = sizeLabels[imageSize] ?? 'Large';
+            prepare({ title, media, caption }) {
               return {
                 title: title || 'Image Block',
-                subtitle: sizeLabel,
+                subtitle: caption || 'Full width',
                 media,
               };
             },

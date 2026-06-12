@@ -4,68 +4,32 @@ import { PortableText } from '@portabletext/react';
 import { sanityClient } from '../lib/sanityClient';
 import { ScrollReveal } from '../shared/ScrollReveal';
 
-const caseStudyMediaFrameClass =
-  'relative mx-auto aspect-[1310/854] overflow-hidden w-[min(100%,1310px,calc(768px*1310/854))] max-h-[768px]';
 const caseStudyVideoFrameClass =
   'relative mx-auto flex items-center justify-center bg-black aspect-[1310/854] w-[min(100%,1310px,calc((100dvh-4rem)*1310/854))]';
-const caseStudyMediaClass = 'block w-full h-full object-cover';
 const caseStudyVideoClass = 'max-h-full max-w-full object-contain';
-const caseStudyMediaSectionClass =
-  'relative w-screen left-1/2 -translate-x-1/2 flex flex-col items-center px-8 md:px-16';
+const caseStudyHorizontalPaddingClass = 'px-6 md:px-10';
+const caseStudyVideoSectionClass =
+  `relative w-screen left-1/2 -translate-x-1/2 flex flex-col items-center ${caseStudyHorizontalPaddingClass}`;
+const caseStudyImageSectionClass =
+  `relative w-screen left-1/2 -translate-x-1/2 flex flex-col items-center ${caseStudyHorizontalPaddingClass}`;
+const caseStudyImageFrameClass = 'relative w-full';
+const caseStudyImageClass = 'block w-full h-auto';
 const caseStudyBreakoutClass =
-  'relative w-screen left-1/2 -translate-x-1/2 px-8 md:px-16';
+  `relative w-screen left-1/2 -translate-x-1/2 ${caseStudyHorizontalPaddingClass}`;
 const caseStudyContentWidthClass = 'mx-auto w-full max-w-[1310px]';
+const caseStudyTextWidthClass = 'mx-auto w-full max-w-[700px]';
 const caseStudyCaptionClass =
-  'text-base leading-[1.6] text-gray-500 dark:text-gray-400 text-center w-full';
+  'text-sm md:text-base leading-[1.45] md:leading-[1.6] text-gray-500 dark:text-gray-400 text-center text-pretty px-1';
 const caseStudyCaptionSlotClass =
-  'absolute top-full left-1/2 -translate-x-1/2 w-full max-w-[736px] pt-2 md:pt-3 lg:pt-4';
+  'mt-3 md:mt-4 lg:mt-5 w-full max-w-[min(100%,20rem)] sm:max-w-md md:max-w-[700px] mx-auto';
 const contentBlockGapClass =
-  'gap-[3rem] md:gap-[4.5rem] lg:gap-[6rem]';
+  'gap-[1.8rem] md:gap-[4.5rem] lg:gap-[6rem]';
 
-// ~457×295 — ~10% larger than prior 415×268; same 3/1.9 ratio as WorkCard
+// 1200×760 export; ~450×285 display at 3:1.9 — same ratio as WorkCard
 const moreProjectCardImageClass =
   'mb-4 w-full aspect-[3/1.9] overflow-hidden rounded-lg shadow-md';
 const moreProjectCardImageImgClass =
   'w-full h-full object-cover transition-transform duration-300 group-hover:scale-105';
-
-type ImageSize = 'large' | 'small' | 'wide';
-
-function getCaseStudyImageSectionClass(size?: ImageSize) {
-  switch (size) {
-    case 'small':
-      return 'relative flex flex-col items-center px-8 md:px-16';
-    case 'wide':
-      return 'relative w-screen left-1/2 -translate-x-1/2 flex flex-col items-center';
-    default:
-      return caseStudyMediaSectionClass;
-  }
-}
-
-function getCaseStudyImageFrameClass(size?: ImageSize) {
-  switch (size) {
-    case 'small':
-      return 'relative w-full max-w-[655px] aspect-[1310/854] overflow-hidden';
-    case 'wide':
-      return 'relative w-full';
-    default:
-      return caseStudyMediaFrameClass;
-  }
-}
-
-function getCaseStudyImageClass(size?: ImageSize) {
-  return size === 'wide' ? 'block w-full h-auto' : caseStudyMediaClass;
-}
-
-function getCaseStudyCaptionSlotClass(size?: ImageSize) {
-  switch (size) {
-    case 'small':
-      return 'absolute top-full left-1/2 -translate-x-1/2 w-full max-w-[368px] pt-2 md:pt-3 lg:pt-4';
-    case 'wide':
-      return `${caseStudyCaptionSlotClass} px-8 md:px-16`;
-    default:
-      return caseStudyCaptionSlotClass;
-  }
-}
 
 interface ContentBlock {
   _key: string;
@@ -84,7 +48,6 @@ interface ContentBlock {
     };
   };
   caption?: string;
-  imageSize?: ImageSize;
   videoType?: 'upload' | 'embed';
   videoFile?: {
     asset: {
@@ -125,12 +88,12 @@ const placeholderProject: Project = {
   subtitle: "An eCommerce store for cookbooks.",
   heroImage: {
     asset: {
-      url: "https://placehold.co/3650x1068/9ca3af/ffffff?text=Hero+Image+(1825x534)"
+      url: "https://placehold.co/2560x1440/9ca3af/ffffff?text=Hero+Image+(2560x1440)"
     }
   },
   logo: {
     asset: {
-      url: "https://placehold.co/480x400/f9e4bc/6b5b3e?text=Project+Logo+(240x200)"
+      url: "https://placehold.co/400x400/f9e4bc/6b5b3e?text=Project+Logo+(400x400)"
     }
   },
   tags: ["UX/UI", "Design", "Research", "Prototyping"],
@@ -166,7 +129,7 @@ const placeholderProject: Project = {
       _type: "imageBlock",
       image: {
         asset: {
-          url: "https://placehold.co/1800x1200/d1d5db/9ca3af?text=Project+Screenshot+(900x600)"
+          url: "https://placehold.co/2560x1600/d1d5db/9ca3af?text=Project+Screenshot+(2560px+wide)"
         }
       },
       caption: "Example screenshot showing the main interface"
@@ -196,7 +159,7 @@ const placeholderProject: Project = {
       _type: "imageBlock",
       image: {
         asset: {
-          url: "https://placehold.co/1800x1200/e5e7eb/9ca3af?text=User+Research+(900x600)"
+          url: "https://placehold.co/2560x1400/e5e7eb/9ca3af?text=User+Research+(2560px+wide)"
         }
       },
       caption: "User research findings and personas"
@@ -226,7 +189,7 @@ const placeholderProject: Project = {
       _type: "imageBlock",
       image: {
         asset: {
-          url: "https://placehold.co/1800x1200/d1d5db/9ca3af?text=Final+Design+(900x600)"
+          url: "https://placehold.co/2560x1500/d1d5db/9ca3af?text=Final+Design+(2560px+wide)"
         }
       },
       caption: "Final design implementation"
@@ -362,7 +325,6 @@ export function ProjectDetail() {
               }
             },
             caption,
-            imageSize,
             videoType,
             videoFile {
               asset-> {
@@ -470,13 +432,13 @@ export function ProjectDetail() {
           <div className={`${caseStudyContentWidthClass} overflow-visible`}>
 
           {/* Logo + Challenge/Solution/Results Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-12 md:mb-16 lg:mb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-16 md:mb-16 lg:mb-20">
             {project.logo && (
               <div className="lg:col-span-1 flex justify-center lg:justify-start animate-slide-in-left opacity-0 [animation-delay:0ms] [animation-duration:0.9s]">
                 <img 
                   src={project.logo.asset.url}
                   alt={`${project.title} logo`}
-                  className="w-full max-w-[200px] lg:max-w-[240px] h-auto max-h-[280px] object-contain"
+                  className="w-[200px] h-[200px] object-contain"
                 />
               </div>
             )}
@@ -541,11 +503,11 @@ export function ProjectDetail() {
                         <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
                           Areas of Expertise
                         </p>
-                        <div className="flex flex-nowrap gap-3">
+                        <div className="flex flex-wrap gap-3">
                           {project.tags.map((tag, index) => (
                             <span
                               key={index}
-                              className="shrink-0 whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md ring-1 ring-gray-300 dark:ring-gray-600 bg-white dark:bg-gray-800"
+                              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md ring-1 ring-gray-300 dark:ring-gray-600 bg-white dark:bg-gray-800"
                             >
                               {tag}
                             </span>
@@ -561,18 +523,10 @@ export function ProjectDetail() {
 
           {/* Content Blocks */}
           <div className={`flex flex-col ${contentBlockGapClass}`}>
-            {project.contentBlocks?.map((block) => {
-              const hasMediaCaption =
-                (block._type === 'imageBlock' || block._type === 'videoBlock') &&
-                Boolean(block.caption);
-
-              return (
-              <ScrollReveal
-                key={block._key}
-                className={hasMediaCaption ? 'pb-[10px]' : ''}
-              >
+            {project.contentBlocks?.map((block) => (
+              <ScrollReveal key={block._key}>
                 {block._type === 'textBlock' && (
-                  <div className="max-w-3xl mx-auto">
+                  <div className={caseStudyTextWidthClass}>
                     {block.heading && (
                       <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
                         {block.heading}
@@ -613,14 +567,13 @@ export function ProjectDetail() {
                 )}
 
                 {block._type === 'imageBlock' && block.image && (
-                  <figure className={`${getCaseStudyImageSectionClass(block.imageSize)} m-0`}>
-                    <div className={getCaseStudyImageFrameClass(block.imageSize)}>
+                  <figure className={`${caseStudyImageSectionClass} m-0`}>
+                    <div className={caseStudyImageFrameClass}>
                       <img
                         src={block.image.asset.url}
                         alt={block.caption || ''}
-                        className={getCaseStudyImageClass(block.imageSize)}
-                        {...(block.imageSize === 'wide' &&
-                        block.image.asset.metadata?.dimensions
+                        className={caseStudyImageClass}
+                        {...(block.image.asset.metadata?.dimensions
                           ? {
                               width: block.image.asset.metadata.dimensions.width,
                               height: block.image.asset.metadata.dimensions.height,
@@ -629,7 +582,7 @@ export function ProjectDetail() {
                       />
                     </div>
                     {block.caption && (
-                      <figcaption className={`${getCaseStudyCaptionSlotClass(block.imageSize)} ${caseStudyCaptionClass}`}>
+                      <figcaption className={`${caseStudyCaptionSlotClass} ${caseStudyCaptionClass}`}>
                         {block.caption}
                       </figcaption>
                     )}
@@ -637,7 +590,7 @@ export function ProjectDetail() {
                 )}
 
                 {block._type === 'videoBlock' && (
-                  <figure className={`${caseStudyMediaSectionClass} m-0`}>
+                  <figure className={`${caseStudyVideoSectionClass} m-0`}>
                     {block.videoType === 'upload' && block.videoFile?.asset?.url ? (
                       <div className={caseStudyVideoFrameClass}>
                         <video
@@ -667,8 +620,7 @@ export function ProjectDetail() {
                   </figure>
                 )}
               </ScrollReveal>
-              );
-            })}
+            ))}
           </div>
 
           {/* More Projects */}
