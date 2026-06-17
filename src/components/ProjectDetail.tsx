@@ -431,19 +431,21 @@ export function ProjectDetail() {
         <div className={caseStudyBreakoutClass}>
           <div className={`${caseStudyContentWidthClass} overflow-visible`}>
 
-          {/* Logo + Challenge/Solution/Results Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-16 md:mb-16 lg:mb-20">
-            {project.logo && (
-              <div className="lg:col-span-1 flex justify-center lg:justify-start animate-slide-in-left opacity-0 [animation-delay:0ms] [animation-duration:0.9s]">
-                <img 
+          {/* Logo + Challenge/Solution/Results — uses grid so col-2 left edge = text block left edge */}
+          <div className="grid grid-cols-1 lg:grid-cols-[calc(50%-350px)_1fr] mb-16 md:mb-16 lg:mb-20">
+            {project.logo ? (
+              <div className="flex justify-center lg:justify-center lg:items-start animate-slide-in-left opacity-0 [animation-delay:0ms] [animation-duration:0.9s] mb-8 lg:mb-0">
+                <img
                   src={project.logo.asset.url}
                   alt={`${project.title} logo`}
-                  className="w-[200px] h-[200px] object-contain"
+                  className="w-[150px] h-[150px] lg:w-[180px] lg:h-[180px] object-contain"
                 />
               </div>
+            ) : (
+              <div className="hidden lg:block" />
             )}
-            
-            <div className="lg:col-span-3 flex flex-col gap-8">
+
+            <div className="flex flex-col gap-8">
               {(project.challenge || project.solution || project.results) && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div className="border-t border-gray-200 dark:border-gray-700 pt-8 animate-slide-in-left opacity-0 [animation-delay:250ms] [animation-duration:0.9s]">
