@@ -11,7 +11,7 @@ export function Hero({ view }: { view: SectionView }) {
         </h1>
         <p className="text-xl text-gray-500 dark:text-gray-400">
           {isPlayView
-            ? 'Side quests, experiments, and riffs'
+            ? 'Side projects, experiments, and riffs'
             : 'From content and design to visibility and performance.'}
         </p>
       </div>

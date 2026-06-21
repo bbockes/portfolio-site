@@ -6,7 +6,6 @@ import { WorkSection, type SectionView } from './components/WorkSection';
 import { ContactSection } from './components/ContactSection';
 import { AboutPage } from './components/AboutPage';
 import { ProjectDetail } from './components/ProjectDetail';
-import { SideProjectDetail } from './components/SideProjectDetail';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -42,7 +41,6 @@ export function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/work/:slug" element={<ProjectDetail />} />
-          <Route path="/play/:slug" element={<SideProjectDetail />} />
         </Routes>
       </Layout>
     </BrowserRouter>

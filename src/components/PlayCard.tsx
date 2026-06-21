@@ -1,14 +1,12 @@
-import { Link } from 'react-router-dom';
-
 interface PlayCardProps {
   title: string;
-  slug: string;
   completionDate?: string;
   cardImage?: {
     asset: {
       url: string;
     };
   };
+  onClick: () => void;
 }
 
 function formatCompletionDate(date: string) {
@@ -18,11 +16,12 @@ function formatCompletionDate(date: string) {
   });
 }
 
-export function PlayCard({ title, slug, completionDate, cardImage }: PlayCardProps) {
+export function PlayCard({ title, completionDate, cardImage, onClick }: PlayCardProps) {
   return (
-    <Link
-      to={`/play/${slug}`}
-      className="block group bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all hover:-translate-y-1"
+    <button
+      type="button"
+      onClick={onClick}
+      className="block w-full text-left group bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer"
     >
       <div className="w-full aspect-[3/1.9] flex items-center justify-center relative overflow-hidden bg-gray-100 dark:bg-gray-700">
         {cardImage?.asset?.url ? (
@@ -48,6 +47,6 @@ export function PlayCard({ title, slug, completionDate, cardImage }: PlayCardPro
           </p>
         )}
       </div>
-    </Link>
+    </button>
   );
 }
