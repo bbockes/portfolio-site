@@ -4,7 +4,7 @@ import { WorkCard } from './WorkCard';
 import { PlayCard } from './PlayCard';
 import { sanityClient } from '../lib/sanityClient';
 
-type SectionView = 'work' | 'play';
+export type SectionView = 'work' | 'play';
 
 interface Project {
   title: string;
@@ -21,7 +21,8 @@ interface Project {
 interface SideProject {
   title: string;
   slug: string;
-  cardImage?: {
+  completionDate?: string;
+  heroImage?: {
     asset: {
       url: string;
     };
@@ -56,11 +57,16 @@ function WorkSectionHeader({
   );
 }
 
-export function WorkSection() {
+export function WorkSection({
+  view,
+  onToggleView,
+}: {
+  view: SectionView;
+  onToggleView: () => void;
+}) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [sideProjects, setSideProjects] = useState<SideProject[]>([]);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState<SectionView>('work');
 
   const sortedProjects = useMemo(
     () =>
@@ -108,7 +114,8 @@ export function WorkSection() {
           sanityClient.fetch<SideProject[]>(`*[_type == "sideProject"] | order(_createdAt desc) {
             title,
             "slug": slug.current,
-            cardImage {
+            completionDate,
+            heroImage {
               asset-> {
                 url
               }
@@ -128,13 +135,11 @@ export function WorkSection() {
     fetchContent();
   }, []);
 
-  const toggleView = () => setView((current) => (current === 'work' ? 'play' : 'work'));
-
   if (loading) {
     return (
       <section className="pt-0 pb-12 md:pt-0 md:pb-16 px-8 md:px-16" id="work">
         <div className="max-w-[960px] mx-auto">
-          <WorkSectionHeader view={view} onToggleView={toggleView} />
+          <WorkSectionHeader view={view} onToggleView={onToggleView} />
           <p className="text-gray-600 dark:text-gray-400">Loading projects...</p>
         </div>
       </section>
@@ -148,7 +153,7 @@ export function WorkSection() {
   return (
     <section className="pt-0 pb-12 md:pt-0 md:pb-16 px-8 md:px-16" id="work">
       <div className="max-w-[960px] mx-auto">
-        <WorkSectionHeader view={view} onToggleView={toggleView} />
+        <WorkSectionHeader view={view} onToggleView={onToggleView} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {items.length > 0 ? (
             isWorkView ? (

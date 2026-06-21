@@ -1,8 +1,8 @@
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
 import { Layout } from './components/Layout';
 import { Hero } from './components/Hero';
-import { WorkSection } from './components/WorkSection';
+import { WorkSection, type SectionView } from './components/WorkSection';
 import { ContactSection } from './components/ContactSection';
 import { AboutPage } from './components/AboutPage';
 import { ProjectDetail } from './components/ProjectDetail';
@@ -19,10 +19,15 @@ function ScrollToTop() {
 }
 
 function HomePage() {
+  const [view, setView] = useState<SectionView>('work');
+
   return (
     <>
-      <Hero />
-      <WorkSection />
+      <Hero view={view} />
+      <WorkSection
+        view={view}
+        onToggleView={() => setView((current) => (current === 'work' ? 'play' : 'work'))}
+      />
       <ContactSection />
     </>
   );

@@ -6,12 +6,20 @@ import { sanityClient } from '../lib/sanityClient';
 interface SideProject {
   title: string;
   slug: string;
+  completionDate?: string;
   heroImage?: {
     asset: {
       url: string;
     };
   };
   content?: any[];
+}
+
+function formatCompletionDate(date: string) {
+  return new Date(`${date}T00:00:00`).toLocaleDateString(undefined, {
+    month: 'long',
+    year: 'numeric',
+  });
 }
 
 export function SideProjectDetail() {
@@ -36,6 +44,7 @@ export function SideProjectDetail() {
         const query = `*[_type == "sideProject" && slug.current == $slug][0] {
           title,
           "slug": slug.current,
+          completionDate,
           heroImage {
             asset-> {
               url
@@ -86,6 +95,11 @@ export function SideProjectDetail() {
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight animate-hero-rise opacity-0">
                 {project.title}
               </h1>
+              {project.completionDate && (
+                <p className="text-xl text-white animate-hero-rise opacity-0 [animation-delay:320ms]">
+                  {formatCompletionDate(project.completionDate)}
+                </p>
+              )}
             </div>
           </div>
         </div>
