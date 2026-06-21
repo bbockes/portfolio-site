@@ -48,13 +48,22 @@ export const sideProjectType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'cardImage',
+      title: 'Cover Image',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+      description: 'Homepage play card. Export at 1200×760 px (3:1.9 ratio).',
+    }),
+    defineField({
       name: 'heroImage',
       title: 'Hero Image',
       type: 'image',
       options: {
         hotspot: true,
       },
-      description: 'Used on the project page and as the homepage play card image. Export at 2560×1440 px minimum.',
+      description: 'Full-viewport hero on the project page. Export at 2560×1440 px minimum.',
     }),
     defineField({
       name: 'completionDate',
@@ -72,7 +81,7 @@ export const sideProjectType = defineType({
   preview: {
     select: {
       title: 'title',
-      media: 'heroImage',
+      media: 'cardImage',
     },
     prepare({ title, media }) {
       return {

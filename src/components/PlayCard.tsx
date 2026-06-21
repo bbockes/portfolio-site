@@ -4,7 +4,7 @@ interface PlayCardProps {
   title: string;
   slug: string;
   completionDate?: string;
-  heroImage?: {
+  cardImage?: {
     asset: {
       url: string;
     };
@@ -18,16 +18,16 @@ function formatCompletionDate(date: string) {
   });
 }
 
-export function PlayCard({ title, slug, completionDate, heroImage }: PlayCardProps) {
+export function PlayCard({ title, slug, completionDate, cardImage }: PlayCardProps) {
   return (
     <Link
       to={`/play/${slug}`}
       className="block group bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all hover:-translate-y-1"
     >
       <div className="w-full aspect-[3/1.9] flex items-center justify-center relative overflow-hidden bg-gray-100 dark:bg-gray-700">
-        {heroImage?.asset?.url ? (
+        {cardImage?.asset?.url ? (
           <img
-            src={heroImage.asset.url}
+            src={cardImage.asset.url}
             alt={title}
             className="w-full h-full object-cover"
           />

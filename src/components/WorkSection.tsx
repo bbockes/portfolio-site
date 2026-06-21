@@ -22,7 +22,7 @@ interface SideProject {
   title: string;
   slug: string;
   completionDate?: string;
-  heroImage?: {
+  cardImage?: {
     asset: {
       url: string;
     };
@@ -115,7 +115,7 @@ export function WorkSection({
             title,
             "slug": slug.current,
             completionDate,
-            heroImage {
+            cardImage {
               asset-> {
                 url
               }
