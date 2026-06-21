@@ -5,7 +5,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const isWorkPage = location.pathname === '/';
   const isAboutPage = location.pathname === '/about';
-  const isProjectDetailPage = location.pathname.startsWith('/work/');
+  const isProjectDetailPage =
+    location.pathname.startsWith('/work/') || location.pathname.startsWith('/play/');
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

@@ -2,7 +2,7 @@ import { defineField, defineType } from 'sanity'
 
 export const projectType = defineType({
   name: 'project',
-  title: 'Project',
+  title: 'Work Project',
   type: 'document',
   fields: [
     defineField({

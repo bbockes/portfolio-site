@@ -10,7 +10,22 @@ export default defineConfig({
   projectId: '2fx5od72',
   dataset: 'production',
 
-  plugins: [structureTool(), visionTool()],
+  plugins: [
+    structureTool({
+      structure: (S) =>
+        S.list()
+          .title('Content')
+          .items([
+            S.listItem()
+              .title('Work Projects')
+              .child(S.documentTypeList('project').title('Work Projects')),
+            S.listItem()
+              .title('Side Projects')
+              .child(S.documentTypeList('sideProject').title('Side Projects')),
+          ]),
+    }),
+    visionTool(),
+  ],
 
   schema: {
     types: schemaTypes,
