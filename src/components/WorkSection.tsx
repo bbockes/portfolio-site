@@ -1,15 +1,16 @@
 import { useState, useEffect, useMemo } from 'react';
-import { ArrowLeftRight } from 'lucide-react';
 import { WorkCard } from './WorkCard';
 import { PlayCard } from './PlayCard';
 import { SideProjectModal, type SideProjectDetail } from './SideProjectModal';
+import type { SectionView } from './ViewToggle';
 import { sanityClient } from '../lib/sanityClient';
+import { contentBlocksQuery } from '../shared/contentBlockTypes';
 
-export type SectionView = 'work' | 'play';
+export type { SectionView };
 
 interface Project {
   title: string;
-  tags: string[];
+  projectType?: string;
   bgColor: string;
   slug: string;
   screenshot?: {
@@ -27,41 +28,7 @@ interface SideProject extends SideProjectDetail {
   };
 }
 
-function WorkSectionHeader({
-  view,
-  onToggleView,
-}: {
-  view: SectionView;
-  onToggleView: () => void;
-}) {
-  return (
-    <div className="flex items-center mb-8 gap-2.5">
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white capitalize">
-        {view}
-      </h2>
-      <button
-        type="button"
-        onClick={onToggleView}
-        aria-label={view === 'work' ? 'Show play projects' : 'Show work projects'}
-        className="group relative flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-xl bg-transparent text-gray-600 dark:text-gray-300 transition-colors cursor-pointer"
-      >
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 rounded-xl bg-transparent group-hover:bg-[#e8eaed] dark:group-hover:bg-[#333842] transition-colors pointer-events-none"
-        />
-        <ArrowLeftRight className="relative w-[18px] h-[18px]" strokeWidth={1.75} />
-      </button>
-    </div>
-  );
-}
-
-export function WorkSection({
-  view,
-  onToggleView,
-}: {
-  view: SectionView;
-  onToggleView: () => void;
-}) {
+export function WorkSection({ view }: { view: SectionView }) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [sideProjects, setSideProjects] = useState<SideProject[]>([]);
   const [loading, setLoading] = useState(true);
@@ -103,7 +70,7 @@ export function WorkSection({
         const [workData, playData] = await Promise.all([
           sanityClient.fetch<Project[]>(`*[_type == "project"] | order(_createdAt desc) {
             title,
-            tags,
+            projectType,
             bgColor,
             "slug": slug.current,
             screenshot {
@@ -114,6 +81,7 @@ export function WorkSection({
           }`),
           sanityClient.fetch<SideProject[]>(`*[_type == "sideProject"] | order(_createdAt desc) {
             title,
+            projectType,
             "slug": slug.current,
             completionDate,
             cardImage {
@@ -121,12 +89,7 @@ export function WorkSection({
                 url
               }
             },
-            heroImage {
-              asset-> {
-                url
-              }
-            },
-            content[]
+            ${contentBlocksQuery}
           }`),
         ]);
 
@@ -146,7 +109,6 @@ export function WorkSection({
     return (
       <section className="pt-0 pb-12 md:pt-0 md:pb-16 px-8 md:px-16" id="work">
         <div className="max-w-[960px] mx-auto">
-          <WorkSectionHeader view={view} onToggleView={onToggleView} />
           <p className="text-gray-600 dark:text-gray-400">Loading projects...</p>
         </div>
       </section>
@@ -161,7 +123,6 @@ export function WorkSection({
     <>
       <section className="pt-0 pb-12 md:pt-0 md:pb-16 px-8 md:px-16" id="work">
         <div className="max-w-[960px] mx-auto">
-          <WorkSectionHeader view={view} onToggleView={onToggleView} />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {items.length > 0 ? (
               isWorkView ? (
@@ -173,6 +134,7 @@ export function WorkSection({
                   <PlayCard
                     key={project.slug || idx}
                     title={project.title}
+                    projectType={project.projectType}
                     completionDate={project.completionDate}
                     cardImage={project.cardImage}
                     onClick={() => setSelectedSideProject(project)}

@@ -43,13 +43,13 @@ export function AboutPage() {
           </div>
         </section>
 
-        {/* Fun Section */}
+        {/* Play Section */}
         <section className="relative sm:min-h-[600px]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
             {/* Left: Content */}
             <div className="mb-5 md:max-w-[70%] lg:max-w-[80%] xl:max-w-none">
               <h2 className="text-2xl md:text-3xl font-bold text-blue-600 mb-6">
-                Fun
+                Play
               </h2>
               <div className="space-y-4 text-xl text-gray-700 dark:text-gray-300">
                 <p>
@@ -81,7 +81,7 @@ export function AboutPage() {
                   <source media="(min-width: 760px) and (max-width: 840px)" srcSet="/images/fun-tablet.png" />
                   <img 
                     src="/images/fun.png" 
-                    alt="Fun"
+                    alt="Play"
                     className="w-full h-auto"
                   />
                 </picture>

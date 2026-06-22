@@ -1,17 +1,14 @@
 import { useEffect } from 'react';
 import { X } from 'lucide-react';
-import { PortableText } from '@portabletext/react';
+import { ContentBlocks } from './ContentBlocks';
+import type { ContentBlock } from '../shared/contentBlockTypes';
 
 export interface SideProjectDetail {
   title: string;
   slug: string;
+  projectType?: string;
   completionDate?: string;
-  heroImage?: {
-    asset: {
-      url: string;
-    };
-  };
-  content?: any[];
+  contentBlocks?: ContentBlock[];
 }
 
 function formatCompletionDate(date: string) {
@@ -60,6 +57,11 @@ export function SideProjectModal({
     };
   }, [onClose]);
 
+  const metaItems = [
+    project.projectType,
+    project.completionDate ? formatCompletionDate(project.completionDate) : null,
+  ].filter(Boolean);
+
   return (
     <div
       className="fixed inset-0 z-50 overflow-hidden"
@@ -76,65 +78,32 @@ export function SideProjectModal({
 
       <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8 pointer-events-none">
         <div className="relative w-full max-w-3xl max-h-[90dvh] overflow-y-auto overscroll-contain rounded-xl bg-white dark:bg-gray-900 shadow-2xl pointer-events-auto">
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close"
-          className="absolute top-4 right-4 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        {project.heroImage?.asset?.url && (
-          <div className="relative w-full aspect-[16/10] overflow-hidden rounded-t-xl">
-            <img
-              src={project.heroImage.asset.url}
-              alt={project.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
-
-        <div className="p-6 md:p-8">
-          <h2
-            id="side-project-modal-title"
-            className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2"
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="absolute top-4 right-4 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
           >
-            {project.title}
-          </h2>
-          {project.completionDate && (
-            <p className="text-gray-500 dark:text-gray-400 text-base mb-6">
-              {formatCompletionDate(project.completionDate)}
-            </p>
-          )}
+            <X className="w-5 h-5" />
+          </button>
 
-          {project.content && project.content.length > 0 && (
-            <div className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-[1.8] space-y-4">
-              <PortableText
-                value={project.content}
-                components={{
-                  block: {
-                    normal: ({ children }) => <p>{children}</p>,
-                  },
-                  marks: {
-                    strong: ({ children }) => <strong className="font-bold">{children}</strong>,
-                    em: ({ children }) => <em className="italic">{children}</em>,
-                    link: ({ value, children }) => (
-                      <a
-                        href={value?.href}
-                        className="text-blue-600 dark:text-blue-400 hover:underline"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {children}
-                      </a>
-                    ),
-                  },
-                }}
-              />
-            </div>
-          )}
-        </div>
+          <div className="p-6 md:p-8">
+            <header className="text-center mb-8 md:mb-10">
+              <h2
+                id="side-project-modal-title"
+                className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white leading-tight mb-3"
+              >
+                {project.title}
+              </h2>
+              {metaItems.length > 0 && (
+                <p className="text-base md:text-lg text-gray-500 dark:text-gray-400">
+                  {metaItems.join(' · ')}
+                </p>
+              )}
+            </header>
+
+            <ContentBlocks blocks={project.contentBlocks} contained />
+          </div>
         </div>
       </div>
     </div>

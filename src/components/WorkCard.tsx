@@ -1,8 +1,15 @@
 import { Link } from 'react-router-dom';
+import {
+  CARD_BODY_CLASS,
+  CARD_IMAGE_CLASS,
+  CARD_META_CLASS,
+  CARD_SHELL_CLASS,
+  CARD_TITLE_CLASS,
+} from './cardLayout';
 
 interface WorkCardProps {
   title: string;
-  tags: string[];
+  projectType?: string;
   bgColor: string;
   slug: string;
   screenshot?: {
@@ -12,38 +19,32 @@ interface WorkCardProps {
   };
 }
 
-export function WorkCard({ title, tags, bgColor, slug, screenshot }: WorkCardProps) {
+export function WorkCard({ title, projectType, bgColor, slug, screenshot }: WorkCardProps) {
   return (
-    <Link 
+    <Link
       to={`/work/${slug}`}
-      className="block group bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all hover:-translate-y-1"
+      className={CARD_SHELL_CLASS}
     >
-      {/* Image container - image fills card edge to edge */}
-      <div 
-        className="w-full aspect-[3/1.9] flex items-center justify-center relative overflow-hidden"
+      <div
+        className={CARD_IMAGE_CLASS}
         style={{ backgroundColor: bgColor }}
       >
         {screenshot?.asset?.url ? (
-          <img 
+          <img
             src={screenshot.asset.url}
             alt={title}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-white flex items-center justify-center text-gray-400 text-xs">
+          <div className="flex h-full w-full items-center justify-center bg-white text-xs text-gray-400">
             Screenshot
           </div>
         )}
       </div>
-      
-      {/* Content area */}
-      <div className="p-5">
-        <h3 className="text-lg md:text-xl font-semibold mb-2 text-gray-900 dark:text-white">
-          {title}
-        </h3>
-        <p className="text-gray-500 dark:text-gray-400 text-base">
-          {tags?.join(' · ') || ''}
-        </p>
+
+      <div className={CARD_BODY_CLASS}>
+        <h3 className={CARD_TITLE_CLASS}>{title}</h3>
+        <p className={CARD_META_CLASS}>{projectType || '\u00A0'}</p>
       </div>
     </Link>
   );

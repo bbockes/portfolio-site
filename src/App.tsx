@@ -22,11 +22,8 @@ function HomePage() {
 
   return (
     <>
-      <Hero view={view} />
-      <WorkSection
-        view={view}
-        onToggleView={() => setView((current) => (current === 'work' ? 'play' : 'work'))}
-      />
+      <Hero view={view} onViewChange={setView} />
+      <WorkSection view={view} />
       <ContactSection />
     </>
   );

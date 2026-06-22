@@ -1,61 +1,18 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { PortableText } from '@portabletext/react';
 import { sanityClient } from '../lib/sanityClient';
 import { ScrollReveal } from '../shared/ScrollReveal';
+import { ContentBlocks } from './ContentBlocks';
+import {
+  caseStudyBreakoutClass,
+  caseStudyContentWidthClass,
+} from '../shared/caseStudyLayout';
+import { contentBlocksQuery, type ContentBlock } from '../shared/contentBlockTypes';
 
-const caseStudyVideoFrameClass =
-  'relative mx-auto flex items-center justify-center bg-black aspect-[1310/854] w-[min(100%,1310px,calc((100dvh-4rem)*1310/854))]';
-const caseStudyVideoClass = 'max-h-full max-w-full object-contain';
-const caseStudyHorizontalPaddingClass = 'px-6 md:px-10';
-const caseStudyVideoSectionClass =
-  `relative w-screen left-1/2 -translate-x-1/2 flex flex-col items-center ${caseStudyHorizontalPaddingClass}`;
-const caseStudyImageSectionClass =
-  `relative w-screen left-1/2 -translate-x-1/2 flex flex-col items-center ${caseStudyHorizontalPaddingClass}`;
-const caseStudyImageFrameClass = 'relative w-full';
-const caseStudyImageClass = 'block w-full h-auto';
-const caseStudyBreakoutClass =
-  `relative w-screen left-1/2 -translate-x-1/2 ${caseStudyHorizontalPaddingClass}`;
-const caseStudyContentWidthClass = 'mx-auto w-full max-w-[1310px]';
-const caseStudyTextWidthClass = 'mx-auto w-full max-w-[700px]';
-const caseStudyCaptionClass =
-  'text-sm md:text-base leading-[1.45] md:leading-[1.6] text-gray-500 dark:text-gray-400 text-center text-pretty px-1';
-const caseStudyCaptionSlotClass =
-  'mt-3 md:mt-4 lg:mt-5 w-full max-w-[min(100%,20rem)] sm:max-w-md md:max-w-[700px] mx-auto';
-const contentBlockGapClass =
-  'gap-[1.8rem] md:gap-[4.5rem] lg:gap-[6rem]';
-
-// 1200×760 export; ~450×285 display at 3:1.9 — same ratio as WorkCard
 const moreProjectCardImageClass =
   'mb-4 w-full aspect-[3/1.9] overflow-hidden rounded-lg shadow-md';
 const moreProjectCardImageImgClass =
   'w-full h-full object-cover transition-transform duration-300 group-hover:scale-105';
-
-interface ContentBlock {
-  _key: string;
-  _type: 'textBlock' | 'imageBlock' | 'videoBlock';
-  heading?: string;
-  text?: any[]; // Portable text block content
-  image?: {
-    asset: {
-      url: string;
-      metadata?: {
-        dimensions?: {
-          width: number;
-          height: number;
-        };
-      };
-    };
-  };
-  caption?: string;
-  videoType?: 'upload' | 'embed';
-  videoFile?: {
-    asset: {
-      url: string;
-    };
-  };
-  embedUrl?: string;
-}
 
 interface Project {
   title: string;
@@ -218,32 +175,6 @@ const placeholderProject: Project = {
 };
 // END PLACEHOLDER DATA
 
-function getEmbedUrl(url: string): string {
-  if (!url) return '';
-  
-  // Check if already an embed URL
-  if (url.includes('/embed/')) return url;
-  
-  // YouTube URL conversion
-  const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-  const youtubeMatch = url.match(youtubeRegex);
-  if (youtubeMatch) {
-    return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
-  }
-  
-  // Vimeo URL conversion
-  const vimeoRegex = /(?:vimeo\.com\/)(\d+)/;
-  const vimeoMatch = url.match(vimeoRegex);
-  if (vimeoMatch) {
-    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
-  }
-  
-  // Return as-is if it's already an embed URL or other format
-  return url;
-}
-
-
-
 export function ProjectDetail() {
   const { slug } = useParams();
   const [project, setProject] = useState<Project | null>(null);
@@ -308,31 +239,7 @@ export function ProjectDetail() {
           projectType,
           role,
           year,
-          contentBlocks[] {
-            _key,
-            _type,
-            heading,
-            text[],
-            image {
-              asset-> {
-                url,
-                metadata {
-                  dimensions {
-                    width,
-                    height
-                  }
-                }
-              }
-            },
-            caption,
-            videoType,
-            videoFile {
-              asset-> {
-                url
-              }
-            },
-            embedUrl
-          }
+          ${contentBlocksQuery}
         }`;
         
         const data = await sanityClient.fetch(query, { slug });
@@ -524,106 +431,7 @@ export function ProjectDetail() {
           </div>
 
           {/* Content Blocks */}
-          <div className={`flex flex-col ${contentBlockGapClass}`}>
-            {project.contentBlocks?.map((block) => (
-              <ScrollReveal key={block._key}>
-                {block._type === 'textBlock' && (
-                  <div className={caseStudyTextWidthClass}>
-                    {block.heading && (
-                      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                        {block.heading}
-                      </h2>
-                    )}
-                    {block.text && (
-                      <div className="text-xl md:text-[1.375rem] lg:text-2xl text-gray-700 dark:text-gray-300 leading-[1.8] space-y-4">
-                        <PortableText
-                          value={block.text}
-                          components={{
-                            block: {
-                              normal: ({ children }) => <p>{children}</p>,
-                              h2: ({ children }) => <h2 className="text-2xl font-bold mt-6">{children}</h2>,
-                              h3: ({ children }) => <h3 className="text-xl font-bold mt-4">{children}</h3>,
-                            },
-                            marks: {
-                              strong: ({ children }) => <strong className="font-bold">{children}</strong>,
-                              em: ({ children }) => <em className="italic">{children}</em>,
-                              link: ({ value, children }) => (
-                                <a href={value?.href} className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">
-                                  {children}
-                                </a>
-                              ),
-                            },
-                            list: {
-                              bullet: ({ children }) => <ul className="list-disc list-inside space-y-2">{children}</ul>,
-                              number: ({ children }) => <ol className="list-decimal list-inside space-y-2">{children}</ol>,
-                            },
-                            listItem: {
-                              bullet: ({ children }) => <li>{children}</li>,
-                              number: ({ children }) => <li>{children}</li>,
-                            },
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {block._type === 'imageBlock' && block.image && (
-                  <figure className={`${caseStudyImageSectionClass} m-0`}>
-                    <div className={caseStudyImageFrameClass}>
-                      <img
-                        src={block.image.asset.url}
-                        alt={block.caption || ''}
-                        className={caseStudyImageClass}
-                        {...(block.image.asset.metadata?.dimensions
-                          ? {
-                              width: block.image.asset.metadata.dimensions.width,
-                              height: block.image.asset.metadata.dimensions.height,
-                            }
-                          : {})}
-                      />
-                    </div>
-                    {block.caption && (
-                      <figcaption className={`${caseStudyCaptionSlotClass} ${caseStudyCaptionClass}`}>
-                        {block.caption}
-                      </figcaption>
-                    )}
-                  </figure>
-                )}
-
-                {block._type === 'videoBlock' && (
-                  <figure className={`${caseStudyVideoSectionClass} m-0`}>
-                    {block.videoType === 'upload' && block.videoFile?.asset?.url ? (
-                      <div className={caseStudyVideoFrameClass}>
-                        <video
-                          src={block.videoFile.asset.url}
-                          controls
-                          className={caseStudyVideoClass}
-                        >
-                          Your browser does not support the video tag.
-                        </video>
-                      </div>
-                    ) : block.videoType === 'embed' && block.embedUrl ? (
-                      <div className={`${caseStudyVideoFrameClass} overflow-hidden`}>
-                        <iframe
-                          src={getEmbedUrl(block.embedUrl)}
-                          className="absolute inset-0 h-full w-full"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          title="Video player"
-                        />
-                      </div>
-                    ) : null}
-                    {block.caption && (
-                      <figcaption className={`${caseStudyCaptionSlotClass} ${caseStudyCaptionClass}`}>
-                        {block.caption}
-                      </figcaption>
-                    )}
-                  </figure>
-                )}
-              </ScrollReveal>
-            ))}
-          </div>
+          <ContentBlocks blocks={project.contentBlocks} />
 
           {/* More Projects */}
           <ScrollReveal className="mt-24 mb-16">
