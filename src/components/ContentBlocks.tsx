@@ -11,6 +11,12 @@ import {
   caseStudyVideoFrameClass,
   caseStudyVideoSectionClass,
   contentBlockGapClass,
+  playProjectContentGapClass,
+  playProjectImageClass,
+  playProjectImageFrameClass,
+  playProjectMediaSectionClass,
+  playProjectTextWidthClass,
+  playProjectVideoFrameClass,
 } from '../shared/caseStudyLayout';
 import type { ContentBlock } from '../shared/contentBlockTypes';
 import { getEmbedUrl } from '../shared/getEmbedUrl';
@@ -18,20 +24,46 @@ import { getEmbedUrl } from '../shared/getEmbedUrl';
 export function ContentBlocks({
   blocks,
   contained = false,
+  variant = 'default',
 }: {
   blocks?: ContentBlock[];
   contained?: boolean;
+  variant?: 'default' | 'play';
 }) {
   if (!blocks?.length) return null;
 
-  const gapClass = contained ? 'gap-8 md:gap-12' : contentBlockGapClass;
-  const textWidthClass = contained ? 'w-full' : caseStudyTextWidthClass;
-  const imageSectionClass = contained ? 'm-0 w-full' : `${caseStudyImageSectionClass} m-0`;
-  const videoSectionClass = contained ? 'm-0 w-full' : `${caseStudyVideoSectionClass} m-0`;
-  const videoFrameClass = contained
-    ? 'relative mx-auto flex aspect-[1310/854] w-full items-center justify-center bg-black overflow-hidden'
-    : caseStudyVideoFrameClass;
-  const BlockWrapper = contained ? 'div' : ScrollReveal;
+  const isPlay = variant === 'play';
+  const gapClass = isPlay
+    ? playProjectContentGapClass
+    : contained
+      ? 'gap-8 md:gap-12'
+      : contentBlockGapClass;
+  const textWidthClass = isPlay
+    ? playProjectTextWidthClass
+    : contained
+      ? 'w-full'
+      : caseStudyTextWidthClass;
+  const imageSectionClass = isPlay
+    ? playProjectMediaSectionClass
+    : contained
+      ? 'm-0 w-full'
+      : `${caseStudyImageSectionClass} m-0`;
+  const imageFrameClass = isPlay ? playProjectImageFrameClass : caseStudyImageFrameClass;
+  const imageClass = isPlay ? playProjectImageClass : caseStudyImageClass;
+  const videoSectionClass = isPlay
+    ? playProjectMediaSectionClass
+    : contained
+      ? 'm-0 w-full'
+      : `${caseStudyVideoSectionClass} m-0`;
+  const videoFrameClass = isPlay
+    ? playProjectVideoFrameClass
+    : contained
+      ? 'relative mx-auto flex aspect-[1310/854] w-full items-center justify-center bg-black overflow-hidden'
+      : caseStudyVideoFrameClass;
+  const captionSlotClass = isPlay
+    ? 'mt-3 md:mt-4 w-full max-w-[800px] mx-auto'
+    : caseStudyCaptionSlotClass;
+  const BlockWrapper = contained || isPlay ? 'div' : ScrollReveal;
 
   return (
     <div className={`flex flex-col ${gapClass}`}>
@@ -95,11 +127,11 @@ export function ContentBlocks({
 
           {block._type === 'imageBlock' && block.image && (
             <figure className={imageSectionClass}>
-              <div className={caseStudyImageFrameClass}>
+              <div className={imageFrameClass}>
                 <img
                   src={block.image.asset.url}
                   alt={block.caption || ''}
-                  className={caseStudyImageClass}
+                  className={imageClass}
                   {...(block.image.asset.metadata?.dimensions
                     ? {
                         width: block.image.asset.metadata.dimensions.width,
@@ -109,7 +141,7 @@ export function ContentBlocks({
                 />
               </div>
               {block.caption && (
-                <figcaption className={`${caseStudyCaptionSlotClass} ${caseStudyCaptionClass}`}>
+                <figcaption className={`${captionSlotClass} ${caseStudyCaptionClass}`}>
                   {block.caption}
                 </figcaption>
               )}
@@ -136,7 +168,7 @@ export function ContentBlocks({
                 </div>
               ) : null}
               {block.caption && (
-                <figcaption className={`${caseStudyCaptionSlotClass} ${caseStudyCaptionClass}`}>
+                <figcaption className={`${captionSlotClass} ${caseStudyCaptionClass}`}>
                   {block.caption}
                 </figcaption>
               )}

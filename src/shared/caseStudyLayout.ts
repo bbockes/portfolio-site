@@ -14,3 +14,13 @@ export const caseStudyCaptionClass =
 export const caseStudyCaptionSlotClass =
   'mt-3 md:mt-4 lg:mt-5 w-full max-w-[min(100%,20rem)] sm:max-w-md md:max-w-[700px] mx-auto';
 export const contentBlockGapClass = 'gap-[1.8rem] md:gap-[4.5rem] lg:gap-[6rem]';
+
+export const playProjectMediaSectionClass = 'm-0 mx-auto w-full max-w-[800px]';
+export const playProjectImageFrameClass =
+  'relative aspect-[8/5] w-full overflow-hidden';
+export const playProjectImageClass = 'h-full w-full object-cover object-center';
+export const playProjectVideoFrameClass =
+  'relative mx-auto flex aspect-[8/5] w-full max-w-[800px] items-center justify-center overflow-hidden bg-black';
+export const playProjectContentGapClass = 'gap-10 md:gap-14';
+export const playProjectTextWidthClass =
+  'mx-auto w-full max-w-[800px] text-center text-pretty';

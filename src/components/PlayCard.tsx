@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import {
   CARD_BODY_CLASS,
   CARD_IMAGE_CLASS,
@@ -8,6 +9,7 @@ import {
 
 interface PlayCardProps {
   title: string;
+  slug: string;
   projectType?: string;
   completionDate?: string;
   cardImage?: {
@@ -15,7 +17,6 @@ interface PlayCardProps {
       url: string;
     };
   };
-  onClick: () => void;
 }
 
 function formatCompletionYear(date: string) {
@@ -24,19 +25,15 @@ function formatCompletionYear(date: string) {
 
 export function PlayCard({
   title,
+  slug,
   projectType,
   completionDate,
   cardImage,
-  onClick,
 }: PlayCardProps) {
   const year = completionDate ? formatCompletionYear(completionDate) : null;
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`${CARD_SHELL_CLASS} cursor-pointer text-left`}
-    >
+    <Link to={`/play/${slug}`} className={CARD_SHELL_CLASS}>
       <div className={`${CARD_IMAGE_CLASS} bg-gray-100 dark:bg-gray-700`}>
         {cardImage?.asset?.url ? (
           <img
@@ -58,6 +55,6 @@ export function PlayCard({
           {year && <span className="shrink-0">{year}</span>}
         </div>
       </div>
-    </button>
+    </Link>
   );
 }

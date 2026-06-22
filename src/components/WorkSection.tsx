@@ -1,10 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { WorkCard } from './WorkCard';
 import { PlayCard } from './PlayCard';
-import { SideProjectModal, type SideProjectDetail } from './SideProjectModal';
 import type { SectionView } from './ViewToggle';
 import { sanityClient } from '../lib/sanityClient';
-import { contentBlocksQuery } from '../shared/contentBlockTypes';
 
 export type { SectionView };
 
@@ -20,7 +18,11 @@ interface Project {
   };
 }
 
-interface SideProject extends SideProjectDetail {
+interface SideProject {
+  title: string;
+  slug: string;
+  projectType?: string;
+  completionDate?: string;
   cardImage?: {
     asset: {
       url: string;
@@ -32,9 +34,6 @@ export function WorkSection({ view }: { view: SectionView }) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [sideProjects, setSideProjects] = useState<SideProject[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedSideProject, setSelectedSideProject] = useState<SideProjectDetail | null>(
-    null
-  );
 
   const sortedProjects = useMemo(
     () =>
@@ -88,8 +87,7 @@ export function WorkSection({ view }: { view: SectionView }) {
               asset-> {
                 url
               }
-            },
-            ${contentBlocksQuery}
+            }
           }`),
         ]);
 
@@ -120,40 +118,24 @@ export function WorkSection({ view }: { view: SectionView }) {
   const emptyMessage = isWorkView ? 'No projects found.' : 'No side projects found.';
 
   return (
-    <>
-      <section className="pt-0 pb-12 md:pt-0 md:pb-16 px-8 md:px-16" id="work">
-        <div className="max-w-[960px] mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {items.length > 0 ? (
-              isWorkView ? (
-                sortedProjects.map((project, idx) => (
-                  <WorkCard key={project.slug || idx} {...project} />
-                ))
-              ) : (
-                sortedSideProjects.map((project, idx) => (
-                  <PlayCard
-                    key={project.slug || idx}
-                    title={project.title}
-                    projectType={project.projectType}
-                    completionDate={project.completionDate}
-                    cardImage={project.cardImage}
-                    onClick={() => setSelectedSideProject(project)}
-                  />
-                ))
-              )
+    <section className="pt-0 pb-12 md:pt-0 md:pb-16 px-8 md:px-16" id="work">
+      <div className="max-w-[960px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {items.length > 0 ? (
+            isWorkView ? (
+              sortedProjects.map((project, idx) => (
+                <WorkCard key={project.slug || idx} {...project} />
+              ))
             ) : (
-              <p className="text-gray-600 dark:text-gray-400">{emptyMessage}</p>
-            )}
-          </div>
+              sortedSideProjects.map((project, idx) => (
+                <PlayCard key={project.slug || idx} {...project} />
+              ))
+            )
+          ) : (
+            <p className="text-gray-600 dark:text-gray-400">{emptyMessage}</p>
+          )}
         </div>
-      </section>
-
-      {selectedSideProject && (
-        <SideProjectModal
-          project={selectedSideProject}
-          onClose={() => setSelectedSideProject(null)}
-        />
-      )}
-    </>
+      </div>
+    </section>
   );
 }
