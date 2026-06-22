@@ -21,5 +21,4 @@ export const playProjectImageClass = 'block w-full h-auto';
 export const playProjectVideoFrameClass =
   'relative mx-auto flex aspect-[8/5] w-full max-w-[800px] items-center justify-center overflow-hidden bg-black';
 export const playProjectContentGapClass = 'gap-10 md:gap-14';
-export const playProjectTextWidthClass =
-  'mx-auto w-full max-w-[800px] text-center text-pretty';
+export const playProjectTextWidthClass = 'mx-auto w-full max-w-[800px] text-pretty';

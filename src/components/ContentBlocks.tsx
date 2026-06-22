@@ -1,5 +1,6 @@
 import { PortableText } from '@portabletext/react';
 import { ScrollReveal } from '../shared/ScrollReveal';
+import { PlayAdaptiveText, portableTextComponents } from './PlayAdaptiveText';
 import {
   caseStudyCaptionClass,
   caseStudyCaptionSlotClass,
@@ -76,52 +77,14 @@ export function ContentBlocks({
                   {block.heading}
                 </h2>
               )}
-              {block.text && (
-                <div className="text-xl md:text-[1.375rem] lg:text-2xl text-gray-700 dark:text-gray-300 leading-[1.8] space-y-4">
-                  <PortableText
-                    value={block.text}
-                    components={{
-                      block: {
-                        normal: ({ children }) => <p>{children}</p>,
-                        h2: ({ children }) => (
-                          <h2 className="text-2xl font-bold mt-6">{children}</h2>
-                        ),
-                        h3: ({ children }) => (
-                          <h3 className="text-xl font-bold mt-4">{children}</h3>
-                        ),
-                      },
-                      marks: {
-                        strong: ({ children }) => (
-                          <strong className="font-bold">{children}</strong>
-                        ),
-                        em: ({ children }) => <em className="italic">{children}</em>,
-                        link: ({ value, children }) => (
-                          <a
-                            href={value?.href}
-                            className="text-blue-600 dark:text-blue-400 hover:underline"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {children}
-                          </a>
-                        ),
-                      },
-                      list: {
-                        bullet: ({ children }) => (
-                          <ul className="list-disc list-inside space-y-2">{children}</ul>
-                        ),
-                        number: ({ children }) => (
-                          <ol className="list-decimal list-inside space-y-2">{children}</ol>
-                        ),
-                      },
-                      listItem: {
-                        bullet: ({ children }) => <li>{children}</li>,
-                        number: ({ children }) => <li>{children}</li>,
-                      },
-                    }}
-                  />
-                </div>
-              )}
+              {block.text &&
+                (isPlay ? (
+                  <PlayAdaptiveText text={block.text} />
+                ) : (
+                  <div className="text-xl md:text-[1.375rem] lg:text-2xl text-gray-700 dark:text-gray-300 leading-[1.8] space-y-4">
+                    <PortableText value={block.text} components={portableTextComponents} />
+                  </div>
+                ))}
             </div>
           )}
 
