@@ -16,9 +16,8 @@ export const caseStudyCaptionSlotClass =
 export const contentBlockGapClass = 'gap-[1.8rem] md:gap-[4.5rem] lg:gap-[6rem]';
 
 export const playProjectMediaSectionClass = 'm-0 mx-auto w-full max-w-[800px]';
-export const playProjectImageFrameClass =
-  'relative aspect-[8/5] w-full overflow-hidden';
-export const playProjectImageClass = 'h-full w-full object-cover object-center';
+export const playProjectImageFrameClass = 'relative w-full';
+export const playProjectImageClass = 'block w-full h-auto';
 export const playProjectVideoFrameClass =
   'relative mx-auto flex aspect-[8/5] w-full max-w-[800px] items-center justify-center overflow-hidden bg-black';
 export const playProjectContentGapClass = 'gap-10 md:gap-14';

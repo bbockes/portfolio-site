@@ -1,5 +1,5 @@
 import { defineField, defineType } from 'sanity'
-import { contentBlocksField } from './contentBlocks'
+import { sideProjectContentBlocksField } from './contentBlocks'
 
 export const sideProjectType = defineType({
   name: 'sideProject',
@@ -42,7 +42,7 @@ export const sideProjectType = defineType({
       type: 'string',
       description: 'e.g. Personal Project, Experiment, Prototype',
     }),
-    contentBlocksField,
+    sideProjectContentBlocksField,
   ],
   preview: {
     select: {
