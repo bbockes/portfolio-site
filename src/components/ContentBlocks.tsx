@@ -112,7 +112,7 @@ export function ContentBlocks({
           )}
 
           {block._type === 'fileBlock' && block.file?.asset?.url && block.linkText && (
-            <div className={textWidthClass}>
+            <div className={`${textWidthClass} text-center`}>
               <a
                 href={block.file.asset.url}
                 target="_blank"
