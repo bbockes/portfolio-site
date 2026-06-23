@@ -178,12 +178,51 @@ function createTextBlock(includeHeading: boolean) {
   }
 }
 
+const fileBlock = {
+  name: 'fileBlock',
+  title: 'File Block',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'name',
+      title: 'Name',
+      type: 'string',
+      description: 'Reference name for this file (not displayed on frontend)',
+    }),
+    defineField({
+      name: 'file',
+      title: 'File',
+      type: 'file',
+      description: 'Upload a PDF or other file',
+    }),
+    defineField({
+      name: 'linkText',
+      title: 'Link Text',
+      type: 'string',
+      description: 'Text displayed as the download/view link on the frontend',
+      validation: (Rule: any) => Rule.required(),
+    }),
+  ],
+  preview: {
+    select: {
+      name: 'name',
+      linkText: 'linkText',
+    },
+    prepare({ name, linkText }: { name?: string; linkText?: string }) {
+      return {
+        title: name || linkText || 'File Block',
+        subtitle: linkText || 'No link text set',
+      }
+    },
+  },
+}
+
 function createContentBlocksField(includeHeading: boolean) {
   return defineField({
     name: 'contentBlocks',
     title: 'Content Blocks',
     type: 'array',
-    of: [createTextBlock(includeHeading), imageBlock, videoBlock],
+    of: [createTextBlock(includeHeading), imageBlock, videoBlock, fileBlock],
   })
 }
 
