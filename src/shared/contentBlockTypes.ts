@@ -1,6 +1,6 @@
 export interface ContentBlock {
   _key: string;
-  _type: 'textBlock' | 'imageBlock' | 'videoBlock' | 'fileBlock';
+  _type: 'textBlock' | 'imageBlock' | 'videoBlock' | 'fileBlock' | 'ctaBlock';
   heading?: string;
   text?: any[];
   image?: {
@@ -28,6 +28,7 @@ export interface ContentBlock {
     };
   };
   linkText?: string;
+  link?: string;
 }
 
 export const contentBlocksQuery = `contentBlocks[] {
@@ -59,5 +60,6 @@ export const contentBlocksQuery = `contentBlocks[] {
       url
     }
   },
-  linkText
+  linkText,
+  link
 }`;

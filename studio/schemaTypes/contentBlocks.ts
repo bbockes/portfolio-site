@@ -217,12 +217,53 @@ const fileBlock = {
   },
 }
 
+const ctaBlock = {
+  name: 'ctaBlock',
+  title: 'CTA Block',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'name',
+      title: 'Name',
+      type: 'string',
+      description: 'Reference name for this URL or CTA (not displayed on frontend)',
+    }),
+    defineField({
+      name: 'link',
+      title: 'Link',
+      type: 'url',
+      description: 'URL to open when the link is clicked',
+      validation: (Rule: any) => Rule.required(),
+    }),
+    defineField({
+      name: 'linkText',
+      title: 'Link Text',
+      type: 'string',
+      description: 'Text displayed as the link on the frontend',
+      validation: (Rule: any) => Rule.required(),
+    }),
+  ],
+  preview: {
+    select: {
+      name: 'name',
+      linkText: 'linkText',
+      link: 'link',
+    },
+    prepare({ name, linkText, link }: { name?: string; linkText?: string; link?: string }) {
+      return {
+        title: name || linkText || 'CTA Block',
+        subtitle: linkText || link || 'No link set',
+      }
+    },
+  },
+}
+
 function createContentBlocksField(includeHeading: boolean) {
   return defineField({
     name: 'contentBlocks',
     title: 'Content Blocks',
     type: 'array',
-    of: [createTextBlock(includeHeading), imageBlock, videoBlock, fileBlock],
+    of: [createTextBlock(includeHeading), imageBlock, videoBlock, fileBlock, ctaBlock],
   })
 }
 
