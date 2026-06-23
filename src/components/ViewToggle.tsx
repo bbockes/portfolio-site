@@ -16,11 +16,11 @@ export function ViewToggle({
     <div
       role="tablist"
       aria-label="Project type"
-      className="relative inline-grid grid-cols-2 rounded-full bg-gray-900 dark:bg-white p-1"
+      className="view-toggle-track relative inline-grid grid-cols-2 rounded-full p-1"
     >
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute top-1 bottom-1 rounded-full bg-white dark:bg-gray-900 transition-[left] duration-300 ease-out"
+        className="view-toggle-thumb pointer-events-none absolute top-1 bottom-1 rounded-full transition-[left] duration-300 ease-out"
         style={{
           width: 'calc(50% - 4px)',
           left: view === 'work' ? '4px' : 'calc(50%)',
@@ -36,10 +36,10 @@ export function ViewToggle({
             role="tab"
             aria-selected={isSelected}
             onClick={() => onViewChange(value)}
-            className={`relative z-10 min-w-[4.75rem] px-5 py-1.5 text-sm font-medium capitalize transition-colors duration-300 ${
+            className={`relative z-10 min-w-[4.75rem] px-5 py-1.5 text-sm capitalize transition-colors duration-300 ${
               isSelected
-                ? 'text-gray-900 dark:text-white'
-                : 'text-white dark:text-gray-900'
+                ? 'font-semibold text-gray-800 dark:text-gray-100'
+                : 'font-medium text-gray-400 dark:text-gray-500'
             }`}
           >
             {label}

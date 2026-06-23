@@ -32,7 +32,7 @@ export function Hero({
         </div>
         <p className="text-xl text-gray-500 dark:text-gray-400">
           {isPlayView
-            ? 'Side projects, experiments, and riffs'
+            ? 'Side projects, explorations, sketches, and riffs.'
             : 'From content and design to visibility and performance.'}
         </p>
         <div className="mt-6 md:hidden">
