@@ -27,16 +27,19 @@ export function AboutPage() {
               </h2>
               <div className="space-y-4 text-xl text-gray-700 dark:text-gray-300">
                 <p>
-                  I've spent half a decade helping businesses market themselves online, and, before that, assisting customers on retail floors and behind counters.
+                  I started my career helping people in real life. On retail floors, behind counters, wherever someone needed a hand.
                 </p>
                 <p>
-                  From talking to people to building digital products, I've learned how empathy and the right questions can change everything.
+                  Then I moved to helping them online.
                 </p>
                 <p>
-                  That's how I build sites and apps that are a joy to use and genuinely add value. Small wonder users stick around.
+                  The tools changed. The job didn’t.
                 </p>
                 <p>
-                  → <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">View resume</a>
+                  Talk to people. Ask questions. Make something useful. Iterate and improve.
+                </p>
+                <p>
+                  Simple, difficult, rewarding, surprising, and always worth doing well.
                 </p>
               </div>
             </div>
@@ -56,7 +59,7 @@ export function AboutPage() {
                   I'm a Northern Virginia native who likes to read, cook, and make things.
                 </p>
                 <p>
-                  On the weekends, I'll take long walks in nearby parks, or roam around DC in search of friends and food.
+                  On the weekends, you can usually find me walking in a nearby park, roaming DC in search of friends or food, or working on my latest side project.
                 </p>
                 <p>
                   I also{' '}
