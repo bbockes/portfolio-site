@@ -50,7 +50,7 @@ export const projectType = defineType({
       options: {
         hotspot: true,
       },
-      description: 'Full-viewport hero. Export at 2560×1440 px minimum (3840×2160 ideal). ~16:9 works best.',
+      description: 'Shown in full (no crop) at the top of the project page. Wide landscape works best; export at 2560×1440 px minimum (3840×2160 ideal).',
     }),
     defineField({
       name: 'logo',

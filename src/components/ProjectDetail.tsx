@@ -313,11 +313,11 @@ export function ProjectDetail() {
     <div>
       {/* Hero Section - Full Width */}
       {project.heroImage && (
-        <div className="relative w-full min-h-[calc(100dvh-6.5rem)] mb-12 md:mb-16 lg:mb-20 overflow-hidden">
+        <div className="relative w-full mb-12 md:mb-16 lg:mb-20">
           <img 
             src={project.heroImage.asset.url}
             alt={project.title}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="block w-full h-auto"
           />
           <div className="absolute inset-0 flex flex-col justify-end items-center px-8 md:px-16 pb-12 lg:pb-16 bg-black bg-opacity-50">
             <div className="text-center max-w-[1200px]">
