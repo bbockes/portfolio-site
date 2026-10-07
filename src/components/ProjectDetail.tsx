@@ -313,25 +313,36 @@ export function ProjectDetail() {
     <div>
       {/* Hero Section - Full Width */}
       {project.heroImage && (
-        <div className="relative w-full mb-12 md:mb-16 lg:mb-20">
-          <img 
-            src={project.heroImage.asset.url}
-            alt={project.title}
-            className="block w-full h-auto"
-          />
-          <div className="absolute inset-0 flex flex-col justify-end items-center px-8 md:px-16 pb-12 lg:pb-16 bg-black bg-opacity-50">
-            <div className="text-center max-w-[1200px]">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight animate-hero-rise opacity-0">
-                {project.title}
-              </h1>
-              {project.subtitle && (
-                <p className="text-xl text-white animate-hero-rise opacity-0 [animation-delay:320ms]">
-                  {project.subtitle}
-                </p>
-              )}
+        <section className="relative w-full">
+          <div className="relative w-full min-h-[280px] h-[calc(100dvh-6rem-3dvh)] overflow-hidden">
+            <img
+              src={project.heroImage.asset.url}
+              alt=""
+              aria-hidden
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
+            <div
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent"
+              aria-hidden
+            />
+            <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center px-8 pb-10 pt-16 md:px-16 md:pb-12 lg:pb-14">
+              <div className="max-w-[1200px] text-center">
+                <h1 className="mb-3 text-4xl font-bold leading-tight text-white sm:text-5xl lg:mb-4 lg:text-6xl animate-hero-rise opacity-0">
+                  {project.title}
+                </h1>
+                {project.subtitle && (
+                  <p className="text-lg text-white/95 sm:text-xl animate-hero-rise opacity-0 [animation-delay:320ms]">
+                    {project.subtitle}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+          <div
+            className="h-[3dvh] min-h-[12px] w-full shrink-0 bg-white dark:bg-gray-900"
+            aria-hidden
+          />
+        </section>
       )}
 
       <div className="pb-12 md:pb-16">
